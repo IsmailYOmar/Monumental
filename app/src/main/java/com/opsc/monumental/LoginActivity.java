@@ -40,6 +40,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             // Initializes a case for the login button and its method
             case R.id.loginButton:
+                startActivity(new Intent(this, MapsActivity.class));
                 //userLogin();
                 break;
         }
