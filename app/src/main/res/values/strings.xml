@@ -1,5 +1,4 @@
 <resources>
     <string name="app_name">Monumental</string>
     <string name="title_activity_maps">MapsActivity</string>
-    <string name="MAPS_API_KEY">AIzaSyCp0_sF9fxBU3pfmI9PMRSqdRHQE1rfqKk</string>
 </resources>
