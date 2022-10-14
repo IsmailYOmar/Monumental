@@ -8,10 +8,21 @@
     tools:context=".LoginActivity">
 
     <EditText
+        android:id="@+id/nothing"
+        android:layout_width="286dp"
+        android:layout_height="76dp"
+        android:layout_marginTop="308dp"
+        android:background="#00000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.484"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
         android:id="@+id/emailAddress"
         android:layout_width="281dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="440dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/round_edit_text"
         android:drawableLeft="@drawable/ic_envelope"
         android:drawablePadding="10dp"
@@ -21,15 +32,15 @@
         android:textColor="?attr/colorOnPrimary"
         android:textColorHint="?attr/colorOnPrimary"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.526"
+        app:layout_constraintHorizontal_bias="0.469"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/nothing" />
 
     <EditText
         android:id="@+id/password"
         android:layout_width="281dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/round_edit_text"
         android:drawableLeft="@drawable/ic_lock"
         android:drawablePadding="10dp"
@@ -40,7 +51,7 @@
         android:textColor="?attr/colorOnPrimary"
         android:textColorHint="?attr/colorOnPrimary"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.469"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailAddress" />
 
@@ -48,7 +59,7 @@
         android:id="@+id/loginButton"
         android:layout_width="275dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/round_button_1"
         android:drawablePadding="25dp"
         android:paddingStart="15dp"
@@ -56,7 +67,7 @@
         android:textColor="@color/white"
         android:textSize="24dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.448"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password" />
 
