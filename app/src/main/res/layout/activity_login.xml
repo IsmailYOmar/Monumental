@@ -93,6 +93,7 @@
                 android:background="#00000000"
                 android:backgroundTint="@color/white"
                 android:text="Register"
+                android:layout_marginStart="2dp"
                 android:textAlignment="textStart"
                 android:textAllCaps="false"
                 android:textColor="@color/color_2"
