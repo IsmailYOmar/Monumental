@@ -10,31 +10,39 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.SearchView;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.opsc.monumental.databinding.ActivityMapsBinding;
 
 import java.io.IOException;
@@ -47,9 +55,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     private GoogleMap map;
     private ActivityMapsBinding binding;
-    View bottomSheet;
-    private BottomSheetBehavior mBottomSheetBehavior1;
-    View view;
+    Button Collections;
+    SearchView search_bar3;
+    BottomSheetBehavior bottomSheetBehavior;
     private static final String TAG = "MapsActivity";
     private LocationManager locationManager;
     private Location userCurrentLocation;
@@ -59,7 +67,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -74,8 +81,16 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-    }
 
+        View bottomSheet = findViewById(R.id.bottom_sheet1);
+
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        bottomSheetBehavior.setPeekHeight(550);
+
+
+
+    }
     @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap map) {
@@ -93,6 +108,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
            // map.setOnMyLocationClickListener(this);
         }
     }
+
     @Override
     public void onMyLocationClick(@NonNull Location location) {
         Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG)
