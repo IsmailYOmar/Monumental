@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "614151018049",
+    "project_id": "monumental-6d5f8",
+    "storage_bucket": "monumental-6d5f8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:614151018049:android:4ad602b2895bdf139a58c0",
+        "android_client_info": {
+          "package_name": "com.opsc.monumental"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "614151018049-t8fsi0bm5sc0g36rq9k3d8mm62pltfba.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4v8nWG0QGmb8HRRWvZHS4JqOHeh2ecjM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "614151018049-t8fsi0bm5sc0g36rq9k3d8mm62pltfba.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
