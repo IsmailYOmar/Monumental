@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,6 +16,21 @@
         android:layout_marginTop="35dp"
         android:layout_marginLeft="10dp"
         app:layout_dodgeInsetEdges="top"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:background="@drawable/round_button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        android:layout_gravity="bottom|right"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="250dp"
+        app:icon="@drawable/ic__layer_group_"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp" />
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
@@ -59,7 +75,7 @@
                 app:layout_dodgeInsetEdges="top"/>
 
 
-            <EditText
+            <androidx.appcompat.widget.SearchView
                 android:id="@+id/search_bar3"
                 android:layout_gravity="center"
                 android:layout_width="350dp"
@@ -69,8 +85,7 @@
                 android:visibility="visible"
                 android:padding="12dp"
                 android:hint="Where to?"
-                app:iconifiedByDefault="false">
-            </EditText>
+                app:iconifiedByDefault="false"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
