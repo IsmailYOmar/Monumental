@@ -13,6 +13,17 @@
         app:behavior_hideable="false"
         android:background="@drawable/round_sheet">
 
+        <Button
+            android:id="@+id/settings1"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/ic_baseline_person_pin_24"
+            android:layout_gravity="top|left"
+            android:layout_marginTop="25dp"
+            android:layout_marginLeft="10dp"
+            android:visibility="gone"
+            app:layout_dodgeInsetEdges="top"/>
+
 
         <ImageView
             android:layout_width="wrap_content"
@@ -32,7 +43,7 @@
                 android:layout_gravity="center"
                 android:layout_width="350dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="80dp"
                 android:background="@drawable/round_edit_text"
                 android:visibility="visible"
                 android:padding="12dp"
@@ -44,7 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="0dp"
                 android:layout_marginBottom="50dp"
                 android:orientation="horizontal">
 

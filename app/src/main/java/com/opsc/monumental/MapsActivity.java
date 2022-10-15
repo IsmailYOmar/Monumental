@@ -55,8 +55,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     private GoogleMap map;
     private ActivityMapsBinding binding;
-    Button Collections;
-    SearchView search_bar3;
+    Button Collections,settings1,settings2;
+    EditText search_bar3;
     BottomSheetBehavior bottomSheetBehavior;
     private static final String TAG = "MapsActivity";
     private LocationManager locationManager;
@@ -83,12 +83,35 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         mapFragment.getMapAsync(this);
 
         View bottomSheet = findViewById(R.id.bottom_sheet1);
-
+        search_bar3= findViewById(R.id.search_bar3);
+        settings1= findViewById(R.id.settings1);
+        settings2= findViewById(R.id.settings2);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        bottomSheetBehavior.setPeekHeight(550);
+        bottomSheetBehavior.setPeekHeight(470);
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    settings1.setVisibility(View.VISIBLE);
+                    settings2.setVisibility(View.GONE);
+                }
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    settings1.setVisibility(View.GONE);
+                    settings2.setVisibility(View.VISIBLE);
+                }
 
+                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                    settings1.setVisibility(View.GONE);
+                    settings2.setVisibility(View.VISIBLE);
+                }
+            }
 
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
 
     }
     @SuppressLint("MissingPermission")
@@ -96,6 +119,13 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     public void onMapReady(GoogleMap map) {
         if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 103);
+
+            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            userCurrentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            LatLng myLocation = new LatLng(userCurrentLocation.getLatitude(), userCurrentLocation.getLongitude());
+
+            map.setMyLocationEnabled(true);
+            map.animateCamera(CameraUpdateFactory.newLatLng(myLocation));
 
         }else {
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
