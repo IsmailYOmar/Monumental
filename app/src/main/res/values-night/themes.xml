@@ -11,7 +11,7 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="23">false</item>
         <item name="android:windowTranslucentStatus" tools:targetApi="kitkat">true</item>
         <item name="android:fitsSystemWindows">true</item>
         <!-- Customize your theme here. -->
@@ -28,7 +28,7 @@
             <item name="colorOnSecondary">@color/black</item>
             <!-- Status bar color. -->
             <item name="android:statusBarColor" >?attr/colorOnPrimary</item>
-            <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
+            <item name="android:windowLightStatusBar" tools:targetApi="23">false</item>
             <!-- Customize your theme here. -->
         </style>
 </resources>

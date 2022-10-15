@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" >
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -18,10 +18,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Monumental"
-        tools:targetApi="31" >
+        tools:targetApi="31">
+        <activity
+            android:name=".NavigationActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name=".SettingsActivity"
-            android:exported="false" >
+            android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -30,17 +37,17 @@
             android:name=".RegisterActivity"
             android:exported="false"
             android:theme="@style/Theme.Login"
-            android:windowSoftInputMode="adjustPan" >
+            android:windowSoftInputMode="adjustPan">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".LoginActivity"
+            android:animateLayoutChanges="true"
             android:exported="false"
             android:theme="@style/Theme.Login"
-            android:animateLayoutChanges="true"
-            android:windowSoftInputMode="adjustPan" >
+            android:windowSoftInputMode="adjustPan">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -65,11 +72,11 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:exported="true"
             android:label="@string/title_activity_maps"
-            android:windowSoftInputMode="stateHidden|adjustPan" />
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.Splash" >
+            android:theme="@style/Theme.Splash">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />

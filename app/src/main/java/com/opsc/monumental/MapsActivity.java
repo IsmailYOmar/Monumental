@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentActivity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -21,6 +22,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -29,6 +31,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -51,6 +54,7 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.button.MaterialButton;
 import com.opsc.monumental.databinding.ActivityMapsBinding;
 
 import java.io.IOException;
@@ -61,6 +65,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         GoogleMap.OnMyLocationClickListener,
         OnMapReadyCallback {
 
+    Dialog myDialog;
     private GoogleMap mMap;
     private CameraPosition cameraPosition;
     // The entry point to the Places API.
@@ -70,6 +75,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     private ActivityMapsBinding binding;
     Button Collections,settings1,settings2;
+    MaterialButton directions;
+    LinearLayout list;
     androidx.appcompat.widget.SearchView searchView;
     BottomSheetBehavior bottomSheetBehavior;
     private static final String TAG = "MapsActivity";
@@ -110,6 +117,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         searchView= findViewById(R.id.search_bar3);
         settings1= findViewById(R.id.settings1);
         settings2= findViewById(R.id.settings2);
+        list= findViewById(R.id.list);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         bottomSheetBehavior.setPeekHeight(470);
@@ -119,21 +127,38 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
                     settings1.setVisibility(View.VISIBLE);
                     settings2.setVisibility(View.GONE);
+                    list.setVisibility(View.GONE);
                 }
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                     settings1.setVisibility(View.GONE);
                     settings2.setVisibility(View.VISIBLE);
+                    list.setVisibility(View.VISIBLE);
                 }
 
                 if (newState == BottomSheetBehavior.STATE_DRAGGING) {
                     settings1.setVisibility(View.GONE);
                     settings2.setVisibility(View.VISIBLE);
+                    list.setVisibility(View.VISIBLE);
                 }
             }
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
 
+            }
+        });
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if(b) {
+                    if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    }
+                }else {
+                    if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    }
+                }
             }
         });
 
@@ -152,6 +177,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                         //Toast.makeText(getApplicationContext(), "Invalid Search", Toast.LENGTH_LONG).show();
                     }
                     if (addressList.size() > 0) {
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                         Address address = addressList.get(0);
                         LatLng latLng = new LatLng(address.getLatitude(),address.getLongitude());
                         mMap.addMarker(new MarkerOptions().position(latLng).title(location));
@@ -170,6 +196,20 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 return false;
             }
         });
+        myDialog = new Dialog(this);
+        directions = findViewById(R.id.directions);
+
+        directions.setOnClickListener(v -> {
+            myDialog.setContentView(R.layout.activity_directions);
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            lp.copyFrom(myDialog.getWindow().getAttributes());
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            lp.gravity = Gravity.BOTTOM;
+            myDialog.getWindow().setAttributes(lp);
+            myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            myDialog.show();
+        });
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -181,7 +221,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     public void onMapReady(GoogleMap map) {
         // Prompt the user for permission.
         mMap = map;
-
         updateLocationUI();
 
         getDeviceLocation();
@@ -212,13 +251,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         overridePendingTransition(0, 0);
     }
 
-    @Override
-    public void onBackPressed()
-    {//close app on back press
-        super.onBackPressed();
-        finish();
-        moveTaskToBack(true);
-    }
 
     public void hideSoftKeyBoard(){
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
