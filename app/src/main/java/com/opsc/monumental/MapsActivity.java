@@ -127,6 +127,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             map.setMyLocationEnabled(true);
             map.animateCamera(CameraUpdateFactory.newLatLng(myLocation));
 
+
         }else {
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             userCurrentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
