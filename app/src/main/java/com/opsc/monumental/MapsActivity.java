@@ -53,7 +53,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         GoogleMap.OnMyLocationClickListener,
         OnMapReadyCallback {
 
-    private GoogleMap map;
+    private GoogleMap mMap;
     private ActivityMapsBinding binding;
     Button Collections,settings1,settings2;
     EditText search_bar3;
@@ -117,6 +117,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap map) {
+        mMap = map;
         if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 103);
 
@@ -124,8 +125,11 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             userCurrentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             LatLng myLocation = new LatLng(userCurrentLocation.getLatitude(), userCurrentLocation.getLongitude());
 
-            map.setMyLocationEnabled(true);
-            map.animateCamera(CameraUpdateFactory.newLatLng(myLocation));
+            mMap.setMyLocationEnabled(true);
+            float zoomLevel = 24.0f;
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 16.0f));
+            //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, zoomLevel));
+            //mMap.animateCamera(CameraUpdateFactory.newLatLng(myLocation,zoomLevel));
 
 
         }else {
@@ -133,8 +137,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             userCurrentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             LatLng myLocation = new LatLng(userCurrentLocation.getLatitude(), userCurrentLocation.getLongitude());
 
-            map.setMyLocationEnabled(true);
-            map.animateCamera(CameraUpdateFactory.newLatLng(myLocation));
+            mMap.setMyLocationEnabled(true);
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 16.0f));
             //map.setOnMyLocationButtonClickListener(this);
            // map.setOnMyLocationClickListener(this);
         }
@@ -148,8 +152,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     @Override
     public boolean onMyLocationButtonClick() {
-        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT)
-                .show();
+        //Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
         // Return false so that we don't consume the event and the default behavior still occurs
         // (the camera animates to the user's current position).
         return false;
