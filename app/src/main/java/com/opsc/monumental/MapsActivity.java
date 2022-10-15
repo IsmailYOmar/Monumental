@@ -41,6 +41,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.opsc.monumental.databinding.ActivityMapsBinding;
@@ -67,7 +68,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window w = getWindow();
@@ -139,10 +139,60 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
             mMap.setMyLocationEnabled(true);
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 16.0f));
+            init();
             //map.setOnMyLocationButtonClickListener(this);
            // map.setOnMyLocationClickListener(this);
         }
     }
+
+    public void init()
+    {
+        search_bar3.setOnEditorActionListener(new TextView.OnEditorActionListener()
+        {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionID, KeyEvent keyEvent)
+            {
+                if(actionID == EditorInfo.IME_ACTION_SEARCH || actionID == EditorInfo.IME_ACTION_DONE ||
+                        keyEvent.getAction() == keyEvent.ACTION_DOWN || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER)
+                {
+                    geoLocate();
+                }
+                return false;
+            }
+        });
+        hideSoftKeyBoard();
+    }
+
+    public void geoLocate()
+    {
+        String searchString = search_bar3.getText().toString();
+        Geocoder geocoder = new Geocoder(MapsActivity.this);
+        List<Address> list = new ArrayList<>();
+        try{
+            list = geocoder.getFromLocationName(searchString, 1);
+        }catch(IOException e){
+            Toast.makeText(this, "Invalid Search", Toast.LENGTH_LONG)
+                    .show();
+        }
+        if(list.size() > 0)
+        {
+            Address address = list.get(0);
+
+            moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), 16.0f, address.getAddressLine(0));
+        }
+    }
+
+    private void moveCamera(LatLng latLng, float zoom, String title)
+    {
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+
+        MarkerOptions options = new MarkerOptions().position(latLng).title(title);
+
+        mMap.addMarker(options);
+
+        hideSoftKeyBoard();
+    }
+
 
     @Override
     public void onMyLocationClick(@NonNull Location location) {
@@ -171,5 +221,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         super.onBackPressed();
         finish();
         moveTaskToBack(true);
+    }
+
+    public void hideSoftKeyBoard(){
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 }
