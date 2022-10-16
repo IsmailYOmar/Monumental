@@ -164,8 +164,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         myDialog = new Dialog(this);
 
         List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME,
-                Place.Field.LAT_LNG, Place.Field.ADDRESS,Place.Field.PHONE_NUMBER,Place.Field.RATING,
-                Place.Field.OPENING_HOURS,Place.Field.BUSINESS_STATUS,Place.Field.TYPES);
+                Place.Field.LAT_LNG, Place.Field.ADDRESS,Place.Field.PHONE_NUMBER,Place.Field.RATING,Place.Field.WEBSITE_URI,
+                Place.Field.OPENING_HOURS,Place.Field.BUSINESS_STATUS,Place.Field.TYPES,Place.Field.UTC_OFFSET);
 
 
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
@@ -207,7 +207,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
                             Button btnClose;
                             TextView field_NAME, field_ADDRESS,field_PHONE_NUMBER,field_RATING,
-                                    field_OPENING_HOURS,field_BUSINESS_STATUS,field_TYPES;
+                                    field_WEBSITE_URI,field_BUSINESS_STATUS,field_TYPES;
 
                             btnClose = (Button) myDialog.findViewById(R.id.btnClose);
 
@@ -216,17 +216,20 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             field_PHONE_NUMBER = (TextView) myDialog.findViewById(R.id.field_PHONE_NUMBER);
                             field_ADDRESS= (TextView) myDialog.findViewById(R.id.field_ADDRESS);
                             field_RATING = (TextView) myDialog.findViewById(R.id.field_RATING);
-                            field_OPENING_HOURS = (TextView) myDialog.findViewById(R.id.field_OPENING_HOURS);
+                            field_WEBSITE_URI = (TextView) myDialog.findViewById(R.id.field_WEBSITE_URI);
                             field_BUSINESS_STATUS = (TextView) myDialog.findViewById(R.id.field_BUSINESS_STATUS);
 
                             field_NAME.setText(result.getName());
                             field_PHONE_NUMBER.setText(result.getPhoneNumber());
                             field_ADDRESS.setText(result.getAddress());
-                            field_RATING.setText(result.getRating().toString());
-                            //field_OPENING_HOURS.setText(result.getOpeningHours().toString());
-
-                            field_BUSINESS_STATUS.setText(result.getBusinessStatus().toString());
-
+                            String rating = String.valueOf(result.getRating());
+                            field_RATING.setText(rating);
+                            field_WEBSITE_URI.setText(String.valueOf(result.getWebsiteUri()));
+                            if(result.isOpen(result.getUtcOffsetMinutes())){
+                                field_BUSINESS_STATUS.setText("Open");
+                            }else{
+                                field_BUSINESS_STATUS.setText("Closed");
+                            }
                             btnClose.setOnClickListener(new View.OnClickListener() {
 
                                 @Override
