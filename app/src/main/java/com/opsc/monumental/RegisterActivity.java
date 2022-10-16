@@ -15,12 +15,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button registerButton, redirectButton;
 
-    private EditText emailAddress, password;
+    private EditText firstName, lastName, emailAddress, password;
 
     FirebaseAuth mAuth;
 
@@ -29,6 +30,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        firstName = (EditText) findViewById(R.id.firstName);
+        lastName = (EditText) findViewById(R.id.lastName);
         emailAddress = (EditText) findViewById(R.id.emailAddress);
         password = (EditText) findViewById(R.id.password);
 
@@ -57,10 +60,20 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public void registerUser() {
+        String fn = firstName.getText().toString();
+        String ln = lastName.getText().toString();
         String email = emailAddress.getText().toString();
         String pass = password.getText().toString();
 
-        if(TextUtils.isEmpty(email)) {
+        if(TextUtils.isEmpty(fn)) {
+            firstName.setError("This field is required.");
+            firstName.requestFocus();
+        }
+        else if(TextUtils.isEmpty(ln)) {
+            lastName.setError("This field is required.");
+            lastName.requestFocus();
+        }
+        else if(TextUtils.isEmpty(email)) {
             emailAddress.setError("This field is required.");
             emailAddress.requestFocus();
         }
@@ -73,6 +86,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()) {
+                        User data = new User(fn, ln, email);
+                        FirebaseDatabase.getInstance().getReference("Users").child(mAuth.getCurrentUser().getUid()).setValue(data);
                         Toast.makeText(RegisterActivity.this, "Registration Successful.", Toast.LENGTH_SHORT).show();
                         startActivity( new Intent(RegisterActivity.this, MapsActivity.class));
                     }
