@@ -1,6 +1,8 @@
 package com.opsc.monumental;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -39,6 +41,8 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -47,11 +51,18 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
@@ -59,6 +70,7 @@ import com.opsc.monumental.databinding.ActivityMapsBinding;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener,
@@ -72,6 +84,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private PlacesClient placesClient;
     // The entry point to the Fused Location Provider.
     private FusedLocationProviderClient fusedLocationProviderClient;
+
 
     private ActivityMapsBinding binding;
     Button Collections,settings1,settings2;
@@ -97,6 +110,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window w = getWindow();
@@ -114,7 +128,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         View bottomSheet = findViewById(R.id.bottom_sheet1);
-        searchView= findViewById(R.id.search_bar3);
+        //searchView= findViewById(R.id.search_bar3);
         settings1= findViewById(R.id.settings1);
         settings2= findViewById(R.id.settings2);
         list= findViewById(R.id.list);
@@ -147,56 +161,104 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
             }
         });
-        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if(b) {
-                    if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
-                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                    }
-                }else {
-                    if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                    }
-                }
-            }
-        });
-
-        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                String location = searchView.getQuery().toString();
-                List<Address> addressList = null;
-
-                if (location != null || !location.equals("")) {
-                    Geocoder geocoder = new Geocoder(MapsActivity.this);
-
-                    try {
-                        addressList = geocoder.getFromLocationName(location, 1);
-                    } catch (IOException e) {
-                        //Toast.makeText(getApplicationContext(), "Invalid Search", Toast.LENGTH_LONG).show();
-                    }
-                    if (addressList.size() > 0) {
-                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                        Address address = addressList.get(0);
-                        LatLng latLng = new LatLng(address.getLatitude(),address.getLongitude());
-                        mMap.addMarker(new MarkerOptions().position(latLng).title(location));
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,DEFAULT_ZOOM));
-                    }
-                    else{
-                        Toast.makeText(getApplicationContext(), "Invalid Search", Toast.LENGTH_LONG).show();
-                        return false;
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
         myDialog = new Dialog(this);
+
+        List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME,
+                Place.Field.LAT_LNG, Place.Field.ADDRESS,Place.Field.PHONE_NUMBER,Place.Field.RATING,
+                Place.Field.OPENING_HOURS,Place.Field.BUSINESS_STATUS,Place.Field.TYPES);
+
+
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.search_bar3);
+
+        autocompleteFragment.setHint("Where to?");
+        // Specify the types of place data to return.
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+        // Set up a PlaceSelectionListener to handle the response.
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                // TODO: Get info about the selected place.
+                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+
+                final FetchPlaceRequest request = FetchPlaceRequest.newInstance(place.getId(), placeFields);
+
+                placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
+                    Place result = response.getPlace();
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(result.getLatLng(),DEFAULT_ZOOM));
+                    String location = result.getName().toString();
+                    mMap.addMarker(new MarkerOptions().position(result.getLatLng()).title(location));
+                    //code landmark details here
+
+
+                    mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                        @Override
+                        public boolean onMarkerClick(@NonNull Marker marker) {
+                            myDialog.setContentView(R.layout.landmark_details);
+                            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                            lp.copyFrom(myDialog.getWindow().getAttributes());
+                            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                            lp.gravity = Gravity.BOTTOM;
+                            myDialog.getWindow().setAttributes(lp);
+                            myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            myDialog.show();
+
+
+                            Button btnClose;
+                            TextView field_NAME, field_ADDRESS,field_PHONE_NUMBER,field_RATING,
+                                    field_OPENING_HOURS,field_BUSINESS_STATUS,field_TYPES;
+
+                            btnClose = (Button) myDialog.findViewById(R.id.btnClose);
+
+
+                            field_NAME = (TextView) myDialog.findViewById(R.id.field_NAME);
+                            field_PHONE_NUMBER = (TextView) myDialog.findViewById(R.id.field_PHONE_NUMBER);
+                            field_ADDRESS= (TextView) myDialog.findViewById(R.id.field_ADDRESS);
+                            field_RATING = (TextView) myDialog.findViewById(R.id.field_RATING);
+                            field_OPENING_HOURS = (TextView) myDialog.findViewById(R.id.field_OPENING_HOURS);
+                            field_BUSINESS_STATUS = (TextView) myDialog.findViewById(R.id.field_BUSINESS_STATUS);
+
+                            field_NAME.setText(result.getName());
+                            field_PHONE_NUMBER.setText(result.getPhoneNumber());
+                            field_ADDRESS.setText(result.getAddress());
+                            field_RATING.setText(result.getRating().toString());
+                            //field_OPENING_HOURS.setText(result.getOpeningHours().toString());
+
+                            field_BUSINESS_STATUS.setText(result.getBusinessStatus().toString());
+
+                            btnClose.setOnClickListener(new View.OnClickListener() {
+
+                                @Override
+                                public void onClick(View view) {
+                                    myDialog.dismiss();
+                                }
+                            });
+                            return false;
+                        }
+
+
+                    });
+
+                }).addOnFailureListener((exception) -> {
+                    if (exception instanceof ApiException) {
+                        final ApiException apiException = (ApiException) exception;
+                        Log.e(TAG, "Place not found: " + exception.getMessage());
+                        final int statusCode = apiException.getStatusCode();
+                        // TODO: Handle error with given status code.
+                    }
+                });
+                //LatLng latLng = new LatLng(place.getLatitude(),address.getLongitude());
+            }
+
+
+            @Override
+            public void onError(@NonNull Status status) {
+                // TODO: Handle the error.
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
+
         directions = findViewById(R.id.directions);
 
         directions.setOnClickListener(v -> {

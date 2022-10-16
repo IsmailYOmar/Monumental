@@ -77,17 +77,22 @@
                 app:layout_dodgeInsetEdges="top"/>
 
 
-            <androidx.appcompat.widget.SearchView
-                android:id="@+id/search_bar3"
-                android:layout_gravity="center"
-                android:layout_width="350dp"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="35dp"
+                android:background="@drawable/round_edit_text"
+                android:layout_gravity="center">
+            <fragment android:id="@+id/search_bar3"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
                 android:background="@drawable/round_edit_text"
                 android:visibility="visible"
                 android:padding="12dp"
                 app:queryHint="Where to?"
-                app:iconifiedByDefault="false"/>
+                android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+                />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
