@@ -7,6 +7,24 @@
     tools:context=".CollectionsActivity">
 
 
+    <TextView
+        android:id="@+id/field_NAME"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="48dp"
+        android:paddingHorizontal="25dp"
+        android:singleLine="false"
+        android:text="Collections"
+        android:textColor="@color/black"
+        android:textFontWeight="@integer/material_motion_duration_long_2"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search_bar4"
         android:layout_width="0dp"
@@ -20,8 +38,10 @@
         app:iconifiedByDefault="false"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/field_NAME"
+        app:layout_constraintVertical_bias="1.0"
         app:queryHint="Search Category">
 
     </androidx.appcompat.widget.SearchView>
