@@ -33,7 +33,7 @@
         android:layout_height="50dp"
         android:layout_gravity="bottom|right"
         android:layout_marginTop="5dp"
-        android:layout_marginBottom="250dp"
+        android:layout_marginBottom="275dp"
         android:background="@drawable/round_button"
         android:layout_marginEnd="20dp">
         <Button
@@ -47,11 +47,25 @@
         android:layout_height="50dp"
         android:layout_gravity="bottom|right"
         android:layout_marginTop="5dp"
-        android:layout_marginBottom="325dp"
+        android:layout_marginBottom="350dp"
         android:background="@drawable/round_button"
         android:layout_marginEnd="20dp">
         <Button
             android:id="@+id/directions"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/navigation" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom|right"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="200dp"
+        android:background="@drawable/round_button"
+        android:layout_marginEnd="20dp">
+        <Button
+            android:id="@+id/pins"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/navigation" />

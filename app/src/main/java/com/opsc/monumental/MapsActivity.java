@@ -97,7 +97,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private String API = "&key=AIzaSyDZ2EP0ZUjVnNSp846Vifwsm2qBwYUjvU8";
 
     private ActivityMapsBinding binding;
-    Button Collections,settings1,settings2,directions,restaurant,bank,park,mall,gps;
+    Button Collections,settings1,settings2,directions,restaurant,bank,park,mall,gps,pins;
     LinearLayout list;
     androidx.appcompat.widget.SearchView searchView;
     BottomSheetBehavior bottomSheetBehavior;
@@ -168,7 +168,31 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         gps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 getDeviceLocation();
+            }
+        });
+        pins= (Button) findViewById(R.id.pins);
+        pins.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMap.clear();
+                StringBuilder stringBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+                stringBuilder.append("location=" + lastKnownLocation.getLatitude() + "," + lastKnownLocation.getLongitude());
+                stringBuilder.append("&radius=1000");
+
+                //user settings
+                stringBuilder.append("&type=restaurant");
+                stringBuilder.append("&sensor=true");
+                stringBuilder.append(API);
+
+                String url = stringBuilder.toString();
+                Object dataFetch[]= new Object[2];
+                dataFetch[0] = mMap;
+                dataFetch[1] = url;
+
+                FetchData fetchData = new FetchData();
+                fetchData.execute(dataFetch);
             }
         });
         list= findViewById(R.id.list);
@@ -473,6 +497,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
             }
         });
+
     }
 
     private void addOrSaveMarkerToMap(double latitude, double longitude, String name, String s, String placeId, boolean b, boolean b1) {
@@ -616,23 +641,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             // Set the map's camera position to the current location of the device.
                             lastKnownLocation = task.getResult();
                             if (lastKnownLocation != null) {
-                                mMap.clear();
-                                StringBuilder stringBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-                                stringBuilder.append("location=" + lastKnownLocation.getLatitude() + "," + lastKnownLocation.getLongitude());
-                                stringBuilder.append("&radius=1000");
-
-                                //user settings
-                                stringBuilder.append("&type=restaurant");
-                                stringBuilder.append("&sensor=true");
-                                stringBuilder.append(API);
-
-                                String url = stringBuilder.toString();
-                                Object dataFetch[]= new Object[2];
-                                dataFetch[0] = mMap;
-                                dataFetch[1] = url;
-
-                                FetchData fetchData = new FetchData();
-                                fetchData.execute(dataFetch);
 
                                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(lastKnownLocation.getLatitude(),
