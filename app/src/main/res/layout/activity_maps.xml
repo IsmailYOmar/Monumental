@@ -40,9 +40,7 @@
             android:id="@+id/gps"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:background="@drawable/gps"
-            app:iconGravity="textStart"
-            app:iconPadding="0dp" />
+            android:background="@drawable/ic_baseline_gps_fixed_24" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="50dp"
@@ -56,7 +54,7 @@
             android:id="@+id/directions"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:background="@drawable/ic_baseline_assistant_direction_24" />
+            android:background="@drawable/navigation" />
     </LinearLayout>
 
     <FrameLayout

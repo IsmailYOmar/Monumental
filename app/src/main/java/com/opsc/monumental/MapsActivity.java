@@ -53,6 +53,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PointOfInterest;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
@@ -67,6 +68,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.opsc.monumental.databinding.ActivityMapsBinding;
 
@@ -92,10 +94,10 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private PlacesClient placesClient;
     // The entry point to the Fused Location Provider.
     private FusedLocationProviderClient fusedLocationProviderClient;
-
+    private String API = "&key=AIzaSyDZ2EP0ZUjVnNSp846Vifwsm2qBwYUjvU8";
 
     private ActivityMapsBinding binding;
-    Button Collections,settings1,settings2,directions,restaurant,bank,park,mall;
+    Button Collections,settings1,settings2,directions,restaurant,bank,park,mall,gps;
     LinearLayout list;
     androidx.appcompat.widget.SearchView searchView;
     BottomSheetBehavior bottomSheetBehavior;
@@ -162,6 +164,13 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             }
         });
 
+        gps= (Button) findViewById(R.id.gps);
+        gps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getDeviceLocation();
+            }
+        });
         list= findViewById(R.id.list);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -334,6 +343,17 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             myDialog.getWindow().setAttributes(lp);
             myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             myDialog.show();
+
+            Button btnClose;
+            btnClose = (Button) myDialog.findViewById(R.id.btnClose);
+
+            btnClose.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    myDialog.dismiss();
+                }
+            });
         });
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -346,12 +366,22 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     public void onMapReady(GoogleMap map) {
         // Prompt the user for permission.
         mMap = map;
-       String API = "&key=AIzaSyDZ2EP0ZUjVnNSp846Vifwsm2qBwYUjvU8";
+
         updateLocationUI();
 
         getDeviceLocation();
-        //map.setOnMyLocationButtonClickListener(this);
-       // map.setOnMyLocationClickListener(this);
+
+
+        mMap.setOnPoiClickListener(new GoogleMap.OnPoiClickListener() {
+            @Override
+            public void onPoiClick(PointOfInterest pointOfInterest)
+            {
+                addOrSaveMarkerToMap(pointOfInterest.latLng.latitude, pointOfInterest.latLng.longitude, pointOfInterest.name, "", pointOfInterest.placeId, true, true);
+
+
+                //Toast.makeText(GoogleMapsActivity.this,""+pointOfInterest.name+" (lat: "+pointOfInterest.latLng.latitude+", long: "+pointOfInterest.latLng.longitude+") " +" is added in your favorite list",Toast.LENGTH_LONG).show();
+            }
+        });
 
         bank.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -429,6 +459,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 stringBuilder.append("&type=park");
                 stringBuilder.append("&sensor=true");
                 stringBuilder.append(API);
+                stringBuilder.append("&key=AIzaSyDZ2EP0ZUjVnNSp846Vifwsm2qBwYUjvU8");
 
                 String url = stringBuilder.toString();
                 Object dataFetch[]= new Object[2];
@@ -438,7 +469,94 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 FetchData fetchData = new FetchData();
                 fetchData.execute(dataFetch);
 
+
+
             }
+        });
+    }
+
+    private void addOrSaveMarkerToMap(double latitude, double longitude, String name, String s, String placeId, boolean b, boolean b1) {
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(@NonNull Marker marker) {
+                myDialog.setContentView(R.layout.landmark_details);
+                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                lp.copyFrom(myDialog.getWindow().getAttributes());
+                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                lp.gravity = Gravity.BOTTOM;
+                myDialog.getWindow().setAttributes(lp);
+                myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                myDialog.show();
+
+                Button favBtn;
+                String favID = "";
+                String locationID = placeId;
+                Button btnClose;
+                TextView field_NAME, field_ADDRESS,field_PHONE_NUMBER,field_RATING,
+                        field_WEBSITE_URI,field_BUSINESS_STATUS,field_RATING_total;
+
+                favBtn = (Button) myDialog.findViewById(R.id.favouriteBtn);
+                btnClose = (Button) myDialog.findViewById(R.id.btnClose);
+
+
+                field_NAME = (TextView) myDialog.findViewById(R.id.field_NAME);
+                field_PHONE_NUMBER = (TextView) myDialog.findViewById(R.id.field_PHONE_NUMBER);
+                field_ADDRESS= (TextView) myDialog.findViewById(R.id.field_ADDRESS);
+                field_RATING = (TextView) myDialog.findViewById(R.id.field_RATING);
+                field_RATING_total = (TextView) myDialog.findViewById(R.id.field_RATING_total);
+                field_WEBSITE_URI = (TextView) myDialog.findViewById(R.id.field_WEBSITE_URI);
+                field_BUSINESS_STATUS = (TextView) myDialog.findViewById(R.id.field_BUSINESS_STATUS);
+
+                field_NAME.setText(name);
+                /*
+                field_PHONE_NUMBER.setText(result.getPhoneNumber());
+                field_ADDRESS.setText(result.getAddress());
+                String rating = String.valueOf(result.getRating());
+                String rating_total =  String.valueOf(result.getUserRatingsTotal());
+                field_RATING.setText(rating);
+                field_RATING_total.setText("(" +rating_total +")");
+                field_WEBSITE_URI.setText(String.valueOf(result.getWebsiteUri()));
+
+
+                if(result.isOpen() == null ){
+                    field_BUSINESS_STATUS.setText("");
+                }else if (result.isOpen() == false){
+                    field_BUSINESS_STATUS.setText("Closed");
+                }else{
+                    field_BUSINESS_STATUS.setText("Open");
+                }*/
+
+                favBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Favourite add = new Favourite(locationID);
+                        FirebaseDatabase.getInstance().getReference("Favourites").child(favID).push().child("UserID: " + mAuth.getCurrentUser().getUid()).setValue(add).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()) {
+                                    Toast.makeText(MapsActivity.this, "Successful", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    Toast.makeText(MapsActivity.this, "Unsuccessful.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                });
+
+                btnClose.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        myDialog.dismiss();
+                    }
+                });
+                return false;
+            }
+
+
         });
     }
 
@@ -498,6 +616,24 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             // Set the map's camera position to the current location of the device.
                             lastKnownLocation = task.getResult();
                             if (lastKnownLocation != null) {
+                                mMap.clear();
+                                StringBuilder stringBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+                                stringBuilder.append("location=" + lastKnownLocation.getLatitude() + "," + lastKnownLocation.getLongitude());
+                                stringBuilder.append("&radius=1000");
+
+                                //user settings
+                                stringBuilder.append("&type=restaurant");
+                                stringBuilder.append("&sensor=true");
+                                stringBuilder.append(API);
+
+                                String url = stringBuilder.toString();
+                                Object dataFetch[]= new Object[2];
+                                dataFetch[0] = mMap;
+                                dataFetch[1] = url;
+
+                                FetchData fetchData = new FetchData();
+                                fetchData.execute(dataFetch);
+
                                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(lastKnownLocation.getLatitude(),
                                                 lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
@@ -527,7 +663,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         try {
             if (locationPermissionGranted ) {
                 mMap.setMyLocationEnabled(true);
-                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                mMap.getUiSettings().setMyLocationButtonEnabled(false);
+
             } else {
                 mMap.setMyLocationEnabled(false);
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);
