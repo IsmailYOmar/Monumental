@@ -95,7 +95,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
 
     private ActivityMapsBinding binding;
-    Button Collections,settings1,settings2,directions;
+    Button Collections,settings1,settings2,directions,restaurant,bank,park,mall;
     LinearLayout list;
     androidx.appcompat.widget.SearchView searchView;
     BottomSheetBehavior bottomSheetBehavior;
@@ -108,6 +108,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private boolean locationPermissionGranted;
     private static final int DEFAULT_ZOOM = 16;
+    private static final int Request_code = 101;
 
     // The geographical location where the device is currently located. That is, the last-known
     // location retrieved by the Fused Location Provider.
@@ -140,6 +141,10 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         settings2= (Button) findViewById(R.id.settings2);
         directions = findViewById(R.id.directions);
         settings1= (Button) findViewById(R.id.settings1);
+        restaurant = (Button) findViewById(R.id.restaurants);
+        mall = (Button) findViewById(R.id.malls);
+        park = (Button) findViewById(R.id.parks);
+        bank = (Button) findViewById(R.id.banks);
 
         settings1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,7 +201,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.search_bar3);
-
 
         autocompleteFragment.setHint("Where to?");
         // Specify the types of place data to return.
@@ -318,6 +322,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             }
         });
 
+        directions = findViewById(R.id.directions);
 
         directions.setOnClickListener(v -> {
             myDialog.setContentView(R.layout.activity_directions);
@@ -347,6 +352,26 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         //map.setOnMyLocationButtonClickListener(this);
        // map.setOnMyLocationClickListener(this);
 
+        bank.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                StringBuilder stringBuilder = new StringBuilder("http://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+                stringBuilder.append("location=" + lastKnownLocation.getLatitude() + "," + lastKnownLocation.getLongitude());
+                stringBuilder.append("&radius=1000");
+                stringBuilder.append("&type=bank");
+                stringBuilder.append("&sensor=true");
+                stringBuilder.append("&${MAPS_API_KEY}");
+
+                String url = stringBuilder.toString();
+                Object dataFetch[]= new Object[2];
+                dataFetch[0] = mMap;
+                dataFetch[1] = url;
+
+                FetchData fetchData = new FetchData();
+                fetchData.execute(dataFetch);
+
+            }
+        });
     }
 
 
