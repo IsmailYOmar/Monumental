@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="Landmark_Types">
+        <item>Landmark Preference</item>
+        <item>Amusement Park</item>
+        <item>Art Gallery</item>
+        <item>Bank</item>
+        <item>Bar</item>
+        <item>Cafe</item>
+        <item>Casino</item>
+        <item>Embassy</item>
+        <item>Hospital</item>
+        <item>Library</item>
+        <item>Mall</item>
+        <item>Movie Theater</item>
+        <item>Museum</item>
+        <item>Night Club</item>
+        <item>Park</item>
+        <item>Pharmacy</item>
+        <item>Police</item>
+        <item>Restaurant</item>
+        <item>Stadium</item>
+        <item>Tourist Attraction</item>
+        <item>Zoo</item>
+    </string-array>
+</resources>

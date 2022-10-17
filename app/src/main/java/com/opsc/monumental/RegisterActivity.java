@@ -88,11 +88,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     if(task.isSuccessful()) {
                         User data = new User(fn, ln, email);
                         FirebaseDatabase.getInstance().getReference("Users").child("UserID: " + mAuth.getCurrentUser().getUid()).setValue(data);
-                        Toast.makeText(RegisterActivity.this, "Registration Successful.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, "Registration Successful.", Toast.LENGTH_LONG).show();
                         startActivity( new Intent(RegisterActivity.this, MapsActivity.class));
                     }
                     else {
-                        Toast.makeText(RegisterActivity.this, "Registration Unsuccessful." + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, "Registration Unsuccessful." + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             });
