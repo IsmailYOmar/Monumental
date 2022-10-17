@@ -7,55 +7,116 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:background="@drawable/round_edit_text"
         android:layout_marginVertical="35dp">
 
-        <TextView
-            android:id="@+id/field_NAME"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="15dp"
-            android:paddingHorizontal="5dp"
-            android:singleLine="false"
-            android:text="Landmark Name"
-            android:textColor="@color/black"
-            android:textFontWeight="@integer/material_motion_duration_long_2"
-            android:textSize="25dp"
-            android:textStyle="bold" />
+            android:layout_marginVertical="15dp"
+            android:layout_marginHorizontal="15dp"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/field_ADDRESS"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="15dp"
-            android:paddingHorizontal="5dp"
-            android:singleLine="false"
-            android:text=""
-            android:textColor="@color/quantum_grey500"
-            android:textFontWeight="@integer/material_motion_duration_long_2"
-            android:textSize="14dp"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/field_NAME"
+                android:layout_width="293dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="15dp"
+                android:paddingHorizontal="5dp"
+                android:singleLine="false"
+                android:text="Landmark Name"
+                android:textColor="@color/black"
+                android:textFontWeight="@integer/material_motion_duration_long_2"
+                android:textSize="25dp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/field_PHONE_NUMBER"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="15dp"
-            android:paddingHorizontal="5dp"
-            android:text=""
-            android:textColor="@color/quantum_grey500"
-            android:textFontWeight="@integer/material_motion_duration_long_2"
-            android:textSize="14dp"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/field_ADDRESS"
+                android:layout_width="293dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="15dp"
+                android:paddingHorizontal="5dp"
+                android:singleLine="false"
+                android:text="field_ADDRESS"
+                android:textColor="@color/quantum_grey500"
+                android:textFontWeight="@integer/material_motion_duration_long_2"
+                android:textSize="14dp"
+                android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/field_PHONE_NUMBER"
+                android:layout_width="197dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="15dp"
+                android:paddingHorizontal="5dp"
+                android:text="field_PHONE_NUMBER"
+                android:textColor="@color/quantum_grey500"
+                android:textFontWeight="@integer/material_motion_duration_long_2"
+                android:textSize="14dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/field_WEBSITE_URI"
+                android:layout_width="199dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="15dp"
+                android:paddingHorizontal="5dp"
+                android:singleLine="false"
+                android:text="field_WEBSITE_URI"
+                android:textColor="@color/color_3"
+                android:textFontWeight="@integer/material_motion_duration_long_2"
+                android:textSize="14dp"
+                android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="200dp"
+                android:layout_marginTop="-110dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="right"
+                    android:layout_marginStart="120dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/round_button">
+
+                    <Button
+                        android:id="@+id/favouriteBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/ic_baseline_star_24"
+                        android:backgroundTint="@color/color_3" />
+                </LinearLayout>
+
+                <Button
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/round_button_1"
+                    android:text="Directions"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="18dp" />
+            </LinearLayout>
+
+        </LinearLayout>
     </RelativeLayout>
 
 
