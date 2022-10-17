@@ -120,8 +120,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         super.onCreate(savedInstanceState);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
-        mAuth = FirebaseAuth.getInstance();
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window w = getWindow();
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
@@ -139,6 +137,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         View bottomSheet = findViewById(R.id.bottom_sheet1);
         //searchView= findViewById(R.id.search_bar3);
+        settings1= (Button) findViewById(R.id.settings1);
+        settings2= (Button) findViewById(R.id.settings2);
+        directions = findViewById(R.id.directions);
         settings1= (Button) findViewById(R.id.settings1);
 
         settings1.setOnClickListener(new View.OnClickListener() {
@@ -160,7 +161,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         list= findViewById(R.id.list);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        bottomSheetBehavior.setPeekHeight(470);
+        bottomSheetBehavior.setPeekHeight(480);
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
@@ -197,6 +198,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.search_bar3);
 
+
         autocompleteFragment.setHint("Where to?");
         // Specify the types of place data to return.
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
@@ -216,7 +218,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     mMap.addMarker(new MarkerOptions().position(result.getLatLng()).title(location));
                     //code landmark details here
 
-
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                     mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                         @Override
                         public boolean onMarkerClick(@NonNull Marker marker) {
@@ -317,7 +319,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             }
         });
 
-        directions = findViewById(R.id.directions);
 
         directions.setOnClickListener(v -> {
             myDialog.setContentView(R.layout.activity_directions);
@@ -414,7 +415,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             Log.e(TAG, "Exception: %s", task.getException());
                             mMap.animateCamera(CameraUpdateFactory
                                     .newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
-                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                            //mMap.getUiSettings().setMyLocationButtonEnabled(false);
                         }
                     }
                 });
