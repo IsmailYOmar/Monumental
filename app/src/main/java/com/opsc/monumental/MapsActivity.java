@@ -69,9 +69,13 @@ import com.google.android.material.button.MaterialButton;
 import com.opsc.monumental.databinding.ActivityMapsBinding;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener,
@@ -163,7 +167,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         });
         myDialog = new Dialog(this);
 
-        List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME,
+        List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.USER_RATINGS_TOTAL,
                 Place.Field.LAT_LNG, Place.Field.ADDRESS,Place.Field.PHONE_NUMBER,Place.Field.RATING,Place.Field.WEBSITE_URI,
                 Place.Field.OPENING_HOURS,Place.Field.BUSINESS_STATUS,Place.Field.TYPES,Place.Field.UTC_OFFSET);
 
@@ -207,7 +211,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
                             Button btnClose;
                             TextView field_NAME, field_ADDRESS,field_PHONE_NUMBER,field_RATING,
-                                    field_WEBSITE_URI,field_BUSINESS_STATUS,field_TYPES;
+                                    field_WEBSITE_URI,field_BUSINESS_STATUS,field_RATING_total;
 
                             btnClose = (Button) myDialog.findViewById(R.id.btnClose);
 
@@ -216,6 +220,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             field_PHONE_NUMBER = (TextView) myDialog.findViewById(R.id.field_PHONE_NUMBER);
                             field_ADDRESS= (TextView) myDialog.findViewById(R.id.field_ADDRESS);
                             field_RATING = (TextView) myDialog.findViewById(R.id.field_RATING);
+                            field_RATING_total = (TextView) myDialog.findViewById(R.id.field_RATING_total);
                             field_WEBSITE_URI = (TextView) myDialog.findViewById(R.id.field_WEBSITE_URI);
                             field_BUSINESS_STATUS = (TextView) myDialog.findViewById(R.id.field_BUSINESS_STATUS);
 
@@ -223,12 +228,18 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             field_PHONE_NUMBER.setText(result.getPhoneNumber());
                             field_ADDRESS.setText(result.getAddress());
                             String rating = String.valueOf(result.getRating());
+                            String rating_total =  String.valueOf(result.getUserRatingsTotal());
                             field_RATING.setText(rating);
+                            field_RATING_total.setText("(" +rating_total +")");
                             field_WEBSITE_URI.setText(String.valueOf(result.getWebsiteUri()));
-                            if(result.isOpen(result.getUtcOffsetMinutes())){
-                                field_BUSINESS_STATUS.setText("Open");
-                            }else{
+
+
+                            if(result.isOpen() == null ){
+                                field_BUSINESS_STATUS.setText("");
+                            }else if (result.isOpen() == false){
                                 field_BUSINESS_STATUS.setText("Closed");
+                            }else{
+                                field_BUSINESS_STATUS.setText("Open");
                             }
                             btnClose.setOnClickListener(new View.OnClickListener() {
 
