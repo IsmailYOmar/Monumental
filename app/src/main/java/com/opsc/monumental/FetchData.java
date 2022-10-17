@@ -34,14 +34,12 @@ public class FetchData extends AsyncTask<Object,String,String> {
     String googleNearbyPlacesData;
     GoogleMap googleMap;
     String url;
-    Dialog myDialog;
-    FirebaseAuth mAuth;
+    Marker mMarker;
 
     @Override
     protected void onPostExecute(String s)
     {
 
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
         try{
             JSONObject jsonObject = new JSONObject(s);
@@ -58,12 +56,14 @@ public class FetchData extends AsyncTask<Object,String,String> {
 
                 JSONObject getName= jsonArray.getJSONObject(i);
                 String name = getName.getString("name");
+                String id = getName.getString("place_id");
 
                 LatLng latLng = new LatLng(Double.parseDouble(lat),Double.parseDouble(lng));
                 MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.title(name);
+                markerOptions.title(name + id);
                 markerOptions.position(latLng);
-                googleMap.addMarker(markerOptions);
+                markerOptions.title(id);
+                Marker mMarker = googleMap.addMarker(markerOptions);
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
 
             }

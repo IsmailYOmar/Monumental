@@ -400,12 +400,208 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             @Override
             public void onPoiClick(PointOfInterest pointOfInterest)
             {
-                addOrSaveMarkerToMap(pointOfInterest.latLng.latitude, pointOfInterest.latLng.longitude, pointOfInterest.name, "", pointOfInterest.placeId, true, true);
+                mMap.clear();
+                List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.USER_RATINGS_TOTAL,
+                        Place.Field.LAT_LNG, Place.Field.ADDRESS,Place.Field.PHONE_NUMBER,Place.Field.RATING,Place.Field.WEBSITE_URI,
+                        Place.Field.OPENING_HOURS,Place.Field.BUSINESS_STATUS,Place.Field.TYPES,Place.Field.UTC_OFFSET);
+
+                final FetchPlaceRequest request = FetchPlaceRequest.newInstance(pointOfInterest.placeId, placeFields);
+                placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
+                    Place result = response.getPlace();
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(result.getLatLng(),DEFAULT_ZOOM));
+                    String location = result.getName().toString();
+                    mMap.addMarker(new MarkerOptions().position(result.getLatLng()).title(location));
+                    //code landmark details here
+
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                        @Override
+                        public boolean onMarkerClick(@NonNull Marker marker) {
+                            myDialog.setContentView(R.layout.landmark_details);
+                            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                            lp.copyFrom(myDialog.getWindow().getAttributes());
+                            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                            lp.gravity = Gravity.BOTTOM;
+                            myDialog.getWindow().setAttributes(lp);
+                            myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            myDialog.show();
+
+                            Button favBtn;
+                            String favID = "";
+                            String locationID = result.getId();
+                            Button btnClose;
+                            TextView field_NAME, field_ADDRESS,field_PHONE_NUMBER,field_RATING,
+                                    field_WEBSITE_URI,field_BUSINESS_STATUS,field_RATING_total;
+
+                            favBtn = (Button) myDialog.findViewById(R.id.favouriteBtn);
+                            btnClose = (Button) myDialog.findViewById(R.id.btnClose);
 
 
-                //Toast.makeText(GoogleMapsActivity.this,""+pointOfInterest.name+" (lat: "+pointOfInterest.latLng.latitude+", long: "+pointOfInterest.latLng.longitude+") " +" is added in your favorite list",Toast.LENGTH_LONG).show();
+                            field_NAME = (TextView) myDialog.findViewById(R.id.field_NAME);
+                            field_PHONE_NUMBER = (TextView) myDialog.findViewById(R.id.field_PHONE_NUMBER);
+                            field_ADDRESS= (TextView) myDialog.findViewById(R.id.field_ADDRESS);
+                            field_RATING = (TextView) myDialog.findViewById(R.id.field_RATING);
+                            field_RATING_total = (TextView) myDialog.findViewById(R.id.field_RATING_total);
+                            field_WEBSITE_URI = (TextView) myDialog.findViewById(R.id.field_WEBSITE_URI);
+                            field_BUSINESS_STATUS = (TextView) myDialog.findViewById(R.id.field_BUSINESS_STATUS);
+
+                            field_NAME.setText(result.getName());
+                            field_PHONE_NUMBER.setText(result.getPhoneNumber());
+                            field_ADDRESS.setText(result.getAddress());
+                            String rating = String.valueOf(result.getRating());
+                            String rating_total =  String.valueOf(result.getUserRatingsTotal());
+                            field_RATING.setText(rating);
+                            field_RATING_total.setText("(" +rating_total +")");
+                            field_WEBSITE_URI.setText(String.valueOf(result.getWebsiteUri()));
+
+
+                            if(result.isOpen() == null ){
+                                field_BUSINESS_STATUS.setText("");
+                            }else if (result.isOpen() == false){
+                                field_BUSINESS_STATUS.setText("Closed");
+                            }else{
+                                field_BUSINESS_STATUS.setText("Open");
+                            }
+
+                            favBtn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Favourite add = new Favourite(locationID);
+                                    FirebaseDatabase.getInstance().getReference("Favourites").child(favID).push().child("UserID: " + mAuth.getCurrentUser().getUid()).setValue(add).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if(task.isSuccessful()) {
+                                                Toast.makeText(MapsActivity.this, "Successful", Toast.LENGTH_SHORT).show();
+                                            }
+                                            else {
+                                                Toast.makeText(MapsActivity.this, "Unsuccessful.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+
+                            btnClose.setOnClickListener(new View.OnClickListener() {
+
+                                @Override
+                                public void onClick(View view) {
+                                    myDialog.dismiss();
+                                }
+                            });
+                            return false;
+                        }
+
+
+                    });
+
+                }).addOnFailureListener((exception) -> {
+                    if (exception instanceof ApiException) {
+                        final ApiException apiException = (ApiException) exception;
+                        Log.e(TAG, "Place not found: " + exception.getMessage());
+                        final int statusCode = apiException.getStatusCode();
+                        // TODO: Handle error with given status code.
+                    }
+                });
+                //LatLng latLng = new LatLng(place.getLatitude(),address.getLongitude());
             }
         });
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(@NonNull Marker marker) {
+                marker.hideInfoWindow();
+
+                List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.USER_RATINGS_TOTAL,
+                        Place.Field.LAT_LNG, Place.Field.ADDRESS,Place.Field.PHONE_NUMBER,Place.Field.RATING,Place.Field.WEBSITE_URI,
+                        Place.Field.OPENING_HOURS,Place.Field.BUSINESS_STATUS,Place.Field.TYPES,Place.Field.UTC_OFFSET);
+
+                final FetchPlaceRequest request = FetchPlaceRequest.newInstance(marker.getTitle(), placeFields);
+                placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
+                    Place result = response.getPlace();
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(result.getLatLng(),DEFAULT_ZOOM));
+                    String location = result.getName().toString();
+                    mMap.addMarker(new MarkerOptions().position(result.getLatLng()).title(location));
+                    //code landmark details here
+
+                myDialog.setContentView(R.layout.landmark_details);
+                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                lp.copyFrom(myDialog.getWindow().getAttributes());
+                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                lp.gravity = Gravity.BOTTOM;
+                myDialog.getWindow().setAttributes(lp);
+                myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                myDialog.show();
+
+                Button favBtn;
+                String favID = "";
+                String locationID = result.getId();
+                Button btnClose;
+                TextView field_NAME, field_ADDRESS,field_PHONE_NUMBER,field_RATING,
+                        field_WEBSITE_URI,field_BUSINESS_STATUS,field_RATING_total;
+
+                favBtn = (Button) myDialog.findViewById(R.id.favouriteBtn);
+                btnClose = (Button) myDialog.findViewById(R.id.btnClose);
+
+
+                field_NAME = (TextView) myDialog.findViewById(R.id.field_NAME);
+                field_PHONE_NUMBER = (TextView) myDialog.findViewById(R.id.field_PHONE_NUMBER);
+                field_ADDRESS= (TextView) myDialog.findViewById(R.id.field_ADDRESS);
+                field_RATING = (TextView) myDialog.findViewById(R.id.field_RATING);
+                field_RATING_total = (TextView) myDialog.findViewById(R.id.field_RATING_total);
+                field_WEBSITE_URI = (TextView) myDialog.findViewById(R.id.field_WEBSITE_URI);
+                field_BUSINESS_STATUS = (TextView) myDialog.findViewById(R.id.field_BUSINESS_STATUS);
+
+                field_NAME.setText(result.getName());
+                field_PHONE_NUMBER.setText(result.getPhoneNumber());
+                field_ADDRESS.setText(result.getAddress());
+                String rating = String.valueOf(result.getRating());
+                String rating_total =  String.valueOf(result.getUserRatingsTotal());
+                field_RATING.setText(rating);
+                field_RATING_total.setText("(" +rating_total +")");
+                field_WEBSITE_URI.setText(String.valueOf(result.getWebsiteUri()));
+
+
+                if(result.isOpen() == null ){
+                    field_BUSINESS_STATUS.setText("");
+                }else if (result.isOpen() == false){
+                    field_BUSINESS_STATUS.setText("Closed");
+                }else{
+                    field_BUSINESS_STATUS.setText("Open");
+                }
+
+                favBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Favourite add = new Favourite(locationID);
+                        FirebaseDatabase.getInstance().getReference("Favourites").child(favID).push().child("UserID: " +
+                                mAuth.getCurrentUser().getUid()).setValue(add).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()) {
+                                    Toast.makeText(MapsActivity.this, "Successful", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    Toast.makeText(MapsActivity.this, "Unsuccessful.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                });
+
+                btnClose.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        myDialog.dismiss();
+                    }
+                });
+                });
+                return true;
+            }
+        });
+
 
         bank.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -483,7 +679,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 stringBuilder.append("&type=park");
                 stringBuilder.append("&sensor=true");
                 stringBuilder.append(API);
-                stringBuilder.append("&key=AIzaSyDZ2EP0ZUjVnNSp846Vifwsm2qBwYUjvU8");
 
                 String url = stringBuilder.toString();
                 Object dataFetch[]= new Object[2];
@@ -498,91 +693,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             }
         });
 
-    }
-
-    private void addOrSaveMarkerToMap(double latitude, double longitude, String name, String s, String placeId, boolean b, boolean b1) {
-
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(@NonNull Marker marker) {
-                myDialog.setContentView(R.layout.landmark_details);
-                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-                lp.copyFrom(myDialog.getWindow().getAttributes());
-                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-                lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-                lp.gravity = Gravity.BOTTOM;
-                myDialog.getWindow().setAttributes(lp);
-                myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                myDialog.show();
-
-                Button favBtn;
-                String favID = "";
-                String locationID = placeId;
-                Button btnClose;
-                TextView field_NAME, field_ADDRESS,field_PHONE_NUMBER,field_RATING,
-                        field_WEBSITE_URI,field_BUSINESS_STATUS,field_RATING_total;
-
-                favBtn = (Button) myDialog.findViewById(R.id.favouriteBtn);
-                btnClose = (Button) myDialog.findViewById(R.id.btnClose);
-
-
-                field_NAME = (TextView) myDialog.findViewById(R.id.field_NAME);
-                field_PHONE_NUMBER = (TextView) myDialog.findViewById(R.id.field_PHONE_NUMBER);
-                field_ADDRESS= (TextView) myDialog.findViewById(R.id.field_ADDRESS);
-                field_RATING = (TextView) myDialog.findViewById(R.id.field_RATING);
-                field_RATING_total = (TextView) myDialog.findViewById(R.id.field_RATING_total);
-                field_WEBSITE_URI = (TextView) myDialog.findViewById(R.id.field_WEBSITE_URI);
-                field_BUSINESS_STATUS = (TextView) myDialog.findViewById(R.id.field_BUSINESS_STATUS);
-
-                field_NAME.setText(name);
-                /*
-                field_PHONE_NUMBER.setText(result.getPhoneNumber());
-                field_ADDRESS.setText(result.getAddress());
-                String rating = String.valueOf(result.getRating());
-                String rating_total =  String.valueOf(result.getUserRatingsTotal());
-                field_RATING.setText(rating);
-                field_RATING_total.setText("(" +rating_total +")");
-                field_WEBSITE_URI.setText(String.valueOf(result.getWebsiteUri()));
-
-
-                if(result.isOpen() == null ){
-                    field_BUSINESS_STATUS.setText("");
-                }else if (result.isOpen() == false){
-                    field_BUSINESS_STATUS.setText("Closed");
-                }else{
-                    field_BUSINESS_STATUS.setText("Open");
-                }*/
-
-                favBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Favourite add = new Favourite(locationID);
-                        FirebaseDatabase.getInstance().getReference("Favourites").child(favID).push().child("UserID: " + mAuth.getCurrentUser().getUid()).setValue(add).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if(task.isSuccessful()) {
-                                    Toast.makeText(MapsActivity.this, "Successful", Toast.LENGTH_SHORT).show();
-                                }
-                                else {
-                                    Toast.makeText(MapsActivity.this, "Unsuccessful.", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-                    }
-                });
-
-                btnClose.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View view) {
-                        myDialog.dismiss();
-                    }
-                });
-                return false;
-            }
-
-
-        });
     }
 
 
