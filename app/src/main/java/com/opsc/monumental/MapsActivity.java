@@ -251,15 +251,18 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
                 placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
                     Place result = response.getPlace();
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(result.getLatLng(),DEFAULT_ZOOM));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(result.getLatLng(),19));
                     String location = result.getName().toString();
-                    mMap.addMarker(new MarkerOptions().position(result.getLatLng()).title(location));
+                    Marker mMarker = mMap.addMarker(new MarkerOptions().position(result.getLatLng()).title(location));
                     //code landmark details here
 
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                     mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                         @Override
                         public boolean onMarkerClick(@NonNull Marker marker) {
+
+                            marker.hideInfoWindow();
+
                             myDialog.setContentView(R.layout.landmark_details);
                             WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                             lp.copyFrom(myDialog.getWindow().getAttributes());
@@ -332,7 +335,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                                     myDialog.dismiss();
                                 }
                             });
-                            return false;
+                            return true;
                         }
 
 
@@ -378,6 +381,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 @Override
                 public void onClick(View view) {
                     myDialog.dismiss();
+                    mMap.clear();
                 }
             });
         });
@@ -397,22 +401,22 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         getDeviceLocation();
 
-
+/*
         mMap.setOnPoiClickListener(new GoogleMap.OnPoiClickListener() {
             @Override
             public void onPoiClick(PointOfInterest pointOfInterest)
             {
-                mMap.clear();
-                List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.USER_RATINGS_TOTAL,
+
+                List<Place.Field> placeFields1 = Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.USER_RATINGS_TOTAL,
                         Place.Field.LAT_LNG, Place.Field.ADDRESS,Place.Field.PHONE_NUMBER,Place.Field.RATING,Place.Field.WEBSITE_URI,
                         Place.Field.OPENING_HOURS,Place.Field.BUSINESS_STATUS,Place.Field.TYPES,Place.Field.UTC_OFFSET);
 
-                final FetchPlaceRequest request = FetchPlaceRequest.newInstance(pointOfInterest.placeId, placeFields);
+                final FetchPlaceRequest request = FetchPlaceRequest.newInstance(pointOfInterest.placeId, placeFields1);
                 placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
-                    Place result = response.getPlace();
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(result.getLatLng(),DEFAULT_ZOOM));
-                    String location = result.getName().toString();
-                    mMap.addMarker(new MarkerOptions().position(result.getLatLng()).title(location));
+                    Place result3 = response.getPlace();
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(result3.getLatLng(),DEFAULT_ZOOM));
+                    String location = result3.getName().toString();
+                    mMap.addMarker(new MarkerOptions().position(result3.getLatLng()).title(location));
                     //code landmark details here
 
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -431,7 +435,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
                             Button favBtn;
                             String favID = "";
-                            String locationID = result.getId();
+                            String locationID = result3.getId();
                             Button btnClose;
                             TextView field_NAME, field_ADDRESS,field_PHONE_NUMBER,field_RATING,
                                     field_WEBSITE_URI,field_BUSINESS_STATUS,field_RATING_total;
@@ -448,19 +452,19 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             field_WEBSITE_URI = (TextView) myDialog.findViewById(R.id.field_WEBSITE_URI);
                             field_BUSINESS_STATUS = (TextView) myDialog.findViewById(R.id.field_BUSINESS_STATUS);
 
-                            field_NAME.setText(result.getName());
-                            field_PHONE_NUMBER.setText(result.getPhoneNumber());
-                            field_ADDRESS.setText(result.getAddress());
-                            String rating = String.valueOf(result.getRating());
-                            String rating_total =  String.valueOf(result.getUserRatingsTotal());
+                            field_NAME.setText(result3.getName());
+                            field_PHONE_NUMBER.setText(result3.getPhoneNumber());
+                            field_ADDRESS.setText(result3.getAddress());
+                            String rating = String.valueOf(result3.getRating());
+                            String rating_total =  String.valueOf(result3.getUserRatingsTotal());
                             field_RATING.setText(rating);
                             field_RATING_total.setText("(" +rating_total +")");
-                            field_WEBSITE_URI.setText(String.valueOf(result.getWebsiteUri()));
+                            field_WEBSITE_URI.setText(String.valueOf(result3.getWebsiteUri()));
 
 
-                            if(result.isOpen() == null ){
+                            if(result3.isOpen() == null ){
                                 field_BUSINESS_STATUS.setText("");
-                            }else if (result.isOpen() == false){
+                            }else if (result3.isOpen() == false){
                                 field_BUSINESS_STATUS.setText("Closed");
                             }else{
                                 field_BUSINESS_STATUS.setText("Open");
@@ -489,6 +493,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                                 @Override
                                 public void onClick(View view) {
                                     myDialog.dismiss();
+                                    mMap.clear();
                                 }
                             });
                             return false;
@@ -508,23 +513,22 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 //LatLng latLng = new LatLng(place.getLatitude(),address.getLongitude());
             }
         });
-
+*/
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(@NonNull Marker marker) {
-                marker.hideInfoWindow();
-
-                List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.USER_RATINGS_TOTAL,
+                List<Place.Field> placeFields2 = Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.USER_RATINGS_TOTAL,
                         Place.Field.LAT_LNG, Place.Field.ADDRESS,Place.Field.PHONE_NUMBER,Place.Field.RATING,Place.Field.WEBSITE_URI,
                         Place.Field.OPENING_HOURS,Place.Field.BUSINESS_STATUS,Place.Field.TYPES,Place.Field.UTC_OFFSET);
 
-                final FetchPlaceRequest request = FetchPlaceRequest.newInstance(marker.getTitle(), placeFields);
+                final FetchPlaceRequest request = FetchPlaceRequest.newInstance(marker.getTitle(), placeFields2);
                 placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
-                    Place result = response.getPlace();
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(result.getLatLng(),DEFAULT_ZOOM));
-                    String location = result.getName().toString();
-                    mMap.addMarker(new MarkerOptions().position(result.getLatLng()).title(location));
+                    Place result2 = response.getPlace();
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(result2.getLatLng(),19));
+                    String location = result2.getName();
+                    mMap.addMarker(new MarkerOptions().position(result2.getLatLng()).title(location));
                     //code landmark details here
+
 
                 myDialog.setContentView(R.layout.landmark_details);
                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
@@ -538,7 +542,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
                 Button favBtn;
                 String favID = "";
-                String locationID = result.getId();
+                String locationID = result2.getId();
                 Button btnClose;
                 TextView field_NAME, field_ADDRESS,field_PHONE_NUMBER,field_RATING,
                         field_WEBSITE_URI,field_BUSINESS_STATUS,field_RATING_total;
@@ -555,19 +559,19 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 field_WEBSITE_URI = (TextView) myDialog.findViewById(R.id.field_WEBSITE_URI);
                 field_BUSINESS_STATUS = (TextView) myDialog.findViewById(R.id.field_BUSINESS_STATUS);
 
-                field_NAME.setText(result.getName());
-                field_PHONE_NUMBER.setText(result.getPhoneNumber());
-                field_ADDRESS.setText(result.getAddress());
-                String rating = String.valueOf(result.getRating());
-                String rating_total =  String.valueOf(result.getUserRatingsTotal());
+                field_NAME.setText(result2.getName());
+                field_PHONE_NUMBER.setText(result2.getPhoneNumber());
+                field_ADDRESS.setText(result2.getAddress());
+                String rating = String.valueOf(result2.getRating());
+                String rating_total =  String.valueOf(result2.getUserRatingsTotal());
                 field_RATING.setText(rating);
                 field_RATING_total.setText("(" +rating_total +")");
-                field_WEBSITE_URI.setText(String.valueOf(result.getWebsiteUri()));
+                field_WEBSITE_URI.setText(String.valueOf(result2.getWebsiteUri()));
 
 
-                if(result.isOpen() == null ){
+                if(result2.isOpen() == null ){
                     field_BUSINESS_STATUS.setText("");
-                }else if (result.isOpen() == false){
+                }else if (result2.isOpen() == false){
                     field_BUSINESS_STATUS.setText("Closed");
                 }else{
                     field_BUSINESS_STATUS.setText("Open");
@@ -603,7 +607,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 return true;
             }
         });
-
 
         bank.setOnClickListener(new View.OnClickListener() {
             @Override
