@@ -18,22 +18,7 @@
         android:layout_marginLeft="10dp"
         app:layout_dodgeInsetEdges="top"/>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/directions"
-        android:background="@drawable/round_button"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:insetLeft="0dp"
-        android:insetTop="0dp"
-        android:insetRight="0dp"
-        android:insetBottom="0dp"
-        android:layout_gravity="bottom|right"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="250dp"
-        app:icon="@drawable/ic_baseline_assistant_direction_24"
-        app:iconTintMode="?attr/colorOnSecondary"
-        app:iconGravity="textStart"
-        app:iconPadding="0dp" />
+
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -42,6 +27,37 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".MapsActivity" />
+
+    <LinearLayout
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom|right"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="250dp"
+        android:background="@drawable/round_button"
+        android:layout_marginEnd="20dp">
+        <Button
+            android:id="@+id/gps"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/gps"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom|right"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="325dp"
+        android:background="@drawable/round_button"
+        android:layout_marginEnd="20dp">
+        <Button
+            android:id="@+id/directions"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/ic_baseline_assistant_direction_24" />
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/bottom_sheet1"

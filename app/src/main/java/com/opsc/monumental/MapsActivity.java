@@ -95,8 +95,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
 
     private ActivityMapsBinding binding;
-    Button Collections,settings1,settings2;
-    MaterialButton directions;
+    Button Collections,settings1,settings2,directions;
     LinearLayout list;
     androidx.appcompat.widget.SearchView searchView;
     BottomSheetBehavior bottomSheetBehavior;
