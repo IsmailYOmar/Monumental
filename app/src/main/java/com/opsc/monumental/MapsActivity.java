@@ -103,6 +103,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     androidx.appcompat.widget.SearchView searchView;
     BottomSheetBehavior bottomSheetBehavior;
     private static final String TAG = "MapsActivity";
+    private String user_pref ;
     private LocationManager locationManager;
     private Location userCurrentLocation;
     private LocationListener locationListener;
@@ -128,6 +129,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             Window w = getWindow();
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
+
+        user_pref="shopping_mall";
 
         binding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -184,7 +187,12 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 stringBuilder.append("&radius=1000");
 
                 //user settings
-                stringBuilder.append("&type=restaurant");
+
+                //
+                //
+                // "&type="+ user_pref
+
+                stringBuilder.append("&type="+ user_pref);
                 stringBuilder.append("&sensor=true");
                 stringBuilder.append(API);
 
@@ -399,7 +407,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
 
         updateLocationUI();
-
+        getDeviceLocation();
 
 /*
         mMap.setOnPoiClickListener(new GoogleMap.OnPoiClickListener() {
@@ -737,9 +745,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 == PackageManager.PERMISSION_GRANTED) {
             locationPermissionGranted = true;
         } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+            ActivityCompat.requestPermissions(MapsActivity.this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
         }
     }
     @Override
@@ -748,7 +756,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                                            @NonNull int[] grantResults) {
         locationPermissionGranted = false;
         if (requestCode
-                == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {// If request is cancelled, the result arrays are empty.
+                == 1) {// If request is cancelled, the result arrays are empty.
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 locationPermissionGranted = true;
@@ -763,13 +771,14 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             if (locationPermissionGranted) {
                 @SuppressLint("MissingPermission") Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
                 locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
+                    @SuppressLint("MissingPermission")
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
                         if (task.isSuccessful()) {
                             // Set the map's camera position to the current location of the device.
                             lastKnownLocation = task.getResult();
                             if (lastKnownLocation != null) {
-
+                                mMap.setMyLocationEnabled(true);
                                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(lastKnownLocation.getLatitude(),
                                                 lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
