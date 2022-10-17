@@ -133,29 +133,33 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         View bottomSheet = findViewById(R.id.bottom_sheet1);
         //searchView= findViewById(R.id.search_bar3);
-        settings1= findViewById(R.id.settings1);
-        settings2= findViewById(R.id.settings2);
+        settings1= (Button) findViewById(R.id.settings1);
+        settings2= (Button) findViewById(R.id.settings2);
+        directions = findViewById(R.id.directions);
         list= findViewById(R.id.list);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        bottomSheetBehavior.setPeekHeight(470);
+        bottomSheetBehavior.setPeekHeight(480);
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
                     settings1.setVisibility(View.VISIBLE);
                     settings2.setVisibility(View.GONE);
+                    directions.setVisibility(View.VISIBLE);
                     list.setVisibility(View.GONE);
                 }
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                     settings1.setVisibility(View.GONE);
                     settings2.setVisibility(View.VISIBLE);
+                    directions.setVisibility(View.GONE);
                     list.setVisibility(View.VISIBLE);
                 }
 
                 if (newState == BottomSheetBehavior.STATE_DRAGGING) {
                     settings1.setVisibility(View.GONE);
                     settings2.setVisibility(View.VISIBLE);
+                    directions.setVisibility(View.GONE);
                     list.setVisibility(View.VISIBLE);
                 }
             }
@@ -174,6 +178,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.search_bar3);
+
 
         autocompleteFragment.setHint("Where to?");
         // Specify the types of place data to return.
@@ -194,7 +199,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     mMap.addMarker(new MarkerOptions().position(result.getLatLng()).title(location));
                     //code landmark details here
 
-
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                     mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                         @Override
                         public boolean onMarkerClick(@NonNull Marker marker) {
@@ -273,7 +278,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             }
         });
 
-        directions = findViewById(R.id.directions);
 
         directions.setOnClickListener(v -> {
             myDialog.setContentView(R.layout.activity_directions);
@@ -370,7 +374,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             Log.e(TAG, "Exception: %s", task.getException());
                             mMap.animateCamera(CameraUpdateFactory
                                     .newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
-                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                            //mMap.getUiSettings().setMyLocationButtonEnabled(false);
                         }
                     }
                 });

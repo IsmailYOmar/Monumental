@@ -83,6 +83,7 @@
                 android:layout_marginTop="35dp"
                 android:background="@drawable/round_edit_text"
                 android:layout_gravity="center">
+
             <fragment android:id="@+id/search_bar3"
                 android:layout_width="350dp"
                 android:layout_height="wrap_content"
@@ -99,7 +100,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:visibility="invisible"
                 android:layout_marginBottom="38dp"
                 android:orientation="horizontal">
 
@@ -109,7 +109,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
                     android:visibility="visible"
-                    android:text="Home"
+                    android:text="Resturants"
                     android:textColor="@color/white"
                     android:textAllCaps="false"
                     android:textSize="12dp"
@@ -121,7 +121,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
                     android:visibility="visible"
-                    android:text="Home"
+                    android:text="Parks"
                     android:textColor="@color/white"
                     android:textAllCaps="false"
                     android:textSize="12dp"
@@ -133,7 +133,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
                     android:visibility="visible"
-                    android:text="Home"
+                    android:text="Malls"
                     android:textColor="@color/white"
                     android:textAllCaps="false"
                     android:textSize="12dp"
@@ -145,7 +145,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
                     android:visibility="visible"
-                    android:text="Home"
+                    android:text="Banks"
                     android:textColor="@color/white"
                     android:textAllCaps="false"
                     android:textSize="12dp"
