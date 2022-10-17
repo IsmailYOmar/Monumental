@@ -66,6 +66,8 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.opsc.monumental.databinding.ActivityMapsBinding;
 
 import java.io.IOException;
@@ -80,6 +82,8 @@ import java.util.TimeZone;
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener,
         OnMapReadyCallback {
+
+    FirebaseAuth mAuth;
 
     Dialog myDialog;
     private GoogleMap mMap;
@@ -116,6 +120,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         super.onCreate(savedInstanceState);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
+        mAuth = FirebaseAuth.getInstance();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window w = getWindow();
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
@@ -133,8 +139,24 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         View bottomSheet = findViewById(R.id.bottom_sheet1);
         //searchView= findViewById(R.id.search_bar3);
-        settings1= findViewById(R.id.settings1);
-        settings2= findViewById(R.id.settings2);
+        settings1= (Button) findViewById(R.id.settings1);
+
+        settings1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MapsActivity.this, SettingsActivity.class));
+            }
+        });
+
+        settings2= (Button) findViewById(R.id.settings2);
+
+        settings2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MapsActivity.this, SettingsActivity.class));
+            }
+        });
+
         list= findViewById(R.id.list);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -208,11 +230,14 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                             myDialog.show();
 
-
+                            Button favBtn;
+                            String favID = "";
+                            String locationID = place.getId();
                             Button btnClose;
                             TextView field_NAME, field_ADDRESS,field_PHONE_NUMBER,field_RATING,
                                     field_WEBSITE_URI,field_BUSINESS_STATUS,field_RATING_total;
 
+                            favBtn = (Button) myDialog.findViewById(R.id.favouriteBtn);
                             btnClose = (Button) myDialog.findViewById(R.id.btnClose);
 
 
@@ -241,6 +266,25 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             }else{
                                 field_BUSINESS_STATUS.setText("Open");
                             }
+
+                            favBtn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Favourite add = new Favourite(locationID);
+                                    FirebaseDatabase.getInstance().getReference("Favourites").child(favID).push().child("UserID: " + mAuth.getCurrentUser().getUid()).setValue(add).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if(task.isSuccessful()) {
+                                                Toast.makeText(MapsActivity.this, "Successful", Toast.LENGTH_SHORT).show();
+                                            }
+                                            else {
+                                                Toast.makeText(MapsActivity.this, "Unsuccessful.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+
                             btnClose.setOnClickListener(new View.OnClickListener() {
 
                                 @Override

@@ -7,4 +7,140 @@
     android:layout_height="match_parent"
     tools:context=".SettingsActivity">
 
+  <LinearLayout
+      android:id="@+id/layout1"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="left"
+      android:orientation="horizontal"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="1.0"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_bias="0.0">
+
+    <Button
+        android:id="@+id/profile"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:background="@drawable/ic_baseline_person_pin_24"
+        android:layout_gravity="top|left"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="10dp"
+        app:layout_dodgeInsetEdges="top"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Username"
+        android:textSize="30sp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:textColor="?attr/colorOnPrimary"/>
+  </LinearLayout>
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom ="25dp"
+      android:orientation="vertical"
+      app:layout_constraintTop_toBottomOf="@+id/layout1">
+
+    <TextView
+        android:id="@+id/personalInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:background="@drawable/round_edit_text"
+        android:drawableRight="@drawable/ic_angle_right"
+        android:padding="18dp"
+        android:text="Personal Information"
+        android:layout_marginTop="10dp"
+        android:textColor="?attr/colorOnPrimary"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/security"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:background="@drawable/round_edit_text"
+        android:drawableRight="@drawable/ic_angle_right"
+        android:padding="18dp"
+        android:text="Security"
+        android:layout_marginTop="10dp"
+        android:textColor="?attr/colorOnPrimary"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/privacy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:background="@drawable/round_edit_text"
+        android:drawableRight="@drawable/ic_angle_right"
+        android:padding="18dp"
+        android:text="Privacy"
+        android:layout_marginTop="10dp"
+        android:textColor="?attr/colorOnPrimary"
+        android:textSize="20sp" />
+
+    <Spinner
+        android:id="@+id/landmarkSelect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:background="@drawable/round_edit_text"
+        android:drawableRight="@drawable/ic_angle_right"
+        android:padding="18dp"
+        android:spinnerMode="dropdown"
+        android:layout_marginTop="10dp"
+        android:textAlignment="textStart"
+        android:textAllCaps="false"
+        android:textColor="?attr/colorOnPrimary"
+        android:textSize="20sp"
+        android:textStyle="normal"/>
+
+    <Switch
+        android:id="@+id/toggleMetric"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="15dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="Use Metric System"
+        android:layout_marginTop="10dp"
+        android:textColor="?attr/colorOnPrimary"
+        android:textSize="20sp"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    <Switch
+        android:id="@+id/toggleImperial"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="15dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="Use Imperial System"
+        android:textColor="?attr/colorOnPrimary"
+        android:textSize="20sp"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    <Button
+        android:id="@+id/signOut"
+        android:layout_width="125dp"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="15dp"
+        android:background="@drawable/round_edit_text"
+        android:padding="5dp"
+        android:text="Sign Out"
+        android:layout_gravity="center_horizontal"
+        android:textAllCaps="false"
+        android:layout_marginTop="15dp"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
+  </LinearLayout>
+
   </androidx.constraintlayout.widget.ConstraintLayout>
