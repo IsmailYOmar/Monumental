@@ -346,6 +346,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     public void onMapReady(GoogleMap map) {
         // Prompt the user for permission.
         mMap = map;
+       String API = "&key=AIzaSyDZ2EP0ZUjVnNSp846Vifwsm2qBwYUjvU8";
         updateLocationUI();
 
         getDeviceLocation();
@@ -355,12 +356,79 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         bank.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                StringBuilder stringBuilder = new StringBuilder("http://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+                mMap.clear();
+                StringBuilder stringBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
                 stringBuilder.append("location=" + lastKnownLocation.getLatitude() + "," + lastKnownLocation.getLongitude());
                 stringBuilder.append("&radius=1000");
                 stringBuilder.append("&type=bank");
                 stringBuilder.append("&sensor=true");
-                stringBuilder.append("&${MAPS_API_KEY}");
+                stringBuilder.append(API);
+
+                String url = stringBuilder.toString();
+                Object dataFetch[]= new Object[2];
+                dataFetch[0] = mMap;
+                dataFetch[1] = url;
+
+                FetchData fetchData = new FetchData();
+                fetchData.execute(dataFetch);
+
+            }
+        });
+
+        restaurant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMap.clear();
+                StringBuilder stringBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+                stringBuilder.append("location=" + lastKnownLocation.getLatitude() + "," + lastKnownLocation.getLongitude());
+                stringBuilder.append("&radius=1000");
+                stringBuilder.append("&type=restaurant");
+                stringBuilder.append("&sensor=true");
+                stringBuilder.append(API);
+
+                String url = stringBuilder.toString();
+                Object dataFetch[]= new Object[2];
+                dataFetch[0] = mMap;
+                dataFetch[1] = url;
+
+                FetchData fetchData = new FetchData();
+                fetchData.execute(dataFetch);
+
+            }
+        });
+
+        mall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMap.clear();
+                StringBuilder stringBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+                stringBuilder.append("location=" + lastKnownLocation.getLatitude() + "," + lastKnownLocation.getLongitude());
+                stringBuilder.append("&radius=1000");
+                stringBuilder.append("&type=shopping_mall");
+                stringBuilder.append("&sensor=true");
+                stringBuilder.append(API);
+
+                String url = stringBuilder.toString();
+                Object dataFetch[]= new Object[2];
+                dataFetch[0] = mMap;
+                dataFetch[1] = url;
+
+                FetchData fetchData = new FetchData();
+                fetchData.execute(dataFetch);
+
+            }
+        });
+
+        park.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMap.clear();
+                StringBuilder stringBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+                stringBuilder.append("location=" + lastKnownLocation.getLatitude() + "," + lastKnownLocation.getLongitude());
+                stringBuilder.append("&radius=1000");
+                stringBuilder.append("&type=park");
+                stringBuilder.append("&sensor=true");
+                stringBuilder.append(API);
 
                 String url = stringBuilder.toString();
                 Object dataFetch[]= new Object[2];
