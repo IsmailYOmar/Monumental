@@ -9,6 +9,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -65,6 +67,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         String email = emailAddress.getText().toString();
         String pass = password.getText().toString();
 
+        String defaultSystem = "Metric";
+        String defaultPreference = "Mall";
+
         if(TextUtils.isEmpty(fn)) {
             firstName.setError("This field is required.");
             firstName.requestFocus();
@@ -87,7 +92,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()) {
                         User data = new User(fn, ln, email);
-                        FirebaseDatabase.getInstance().getReference("Users").child("UserID: " + mAuth.getCurrentUser().getUid()).setValue(data);
+                        Setting defaultSettings = new Setting(defaultPreference, defaultSystem);
+                        FirebaseDatabase.getInstance().getReference("Users").child(mAuth.getCurrentUser().getUid()).setValue(data);
+                        FirebaseDatabase.getInstance().getReference("Settings").child(mAuth.getCurrentUser().getUid()).setValue(defaultSettings);
                         Toast.makeText(RegisterActivity.this, "Registration Successful.", Toast.LENGTH_LONG).show();
                         startActivity( new Intent(RegisterActivity.this, MapsActivity.class));
                     }

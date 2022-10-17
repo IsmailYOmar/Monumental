@@ -38,6 +38,7 @@ import android.widget.SearchView;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.SearchView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -116,11 +117,12 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     // location retrieved by the Fused Location Provider.
     private Location lastKnownLocation;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
+        mAuth = FirebaseAuth.getInstance();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window w = getWindow();
@@ -309,7 +311,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                                 @Override
                                 public void onClick(View view) {
                                     Favourite add = new Favourite(locationID);
-                                    FirebaseDatabase.getInstance().getReference("Favourites").child(favID).push().child("UserID: " + mAuth.getCurrentUser().getUid()).setValue(add).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    FirebaseDatabase.getInstance().getReference("Favourites").child(favID).push().child(mAuth.getCurrentUser().getUid()).setValue(add).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if(task.isSuccessful()) {
