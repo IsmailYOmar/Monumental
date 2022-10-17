@@ -87,7 +87,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()) {
                         User data = new User(fn, ln, email);
-                        FirebaseDatabase.getInstance().getReference("Users").child(mAuth.getCurrentUser().getUid()).setValue(data);
+                        FirebaseDatabase.getInstance().getReference("Users").child("UserID: " + mAuth.getCurrentUser().getUid()).setValue(data);
                         Toast.makeText(RegisterActivity.this, "Registration Successful.", Toast.LENGTH_SHORT).show();
                         startActivity( new Intent(RegisterActivity.this, MapsActivity.class));
                     }
