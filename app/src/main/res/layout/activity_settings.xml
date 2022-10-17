@@ -87,6 +87,33 @@
         android:textColor="?attr/colorOnPrimary"
         android:textSize="20sp" />
 
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginHorizontal="15dp"
+      android:layout_marginTop="10dp"
+      android:background="@drawable/round_edit_text"
+      android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginTop="10dp"
+        android:text="Landmark preference"
+        android:textAlignment="textStart"
+        android:textAllCaps="false"
+        android:textColor="?attr/colorOnPrimary"
+        android:textSize="20sp"
+        android:textStyle="normal" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/round_edit_text">
     <Spinner
         android:id="@+id/landmarkSelect"
         android:layout_width="match_parent"
@@ -96,13 +123,13 @@
         android:backgroundTint="@color/color_1"
         android:padding="18dp"
         android:spinnerMode="dropdown"
-        android:layout_marginTop="10dp"
         android:textAlignment="textStart"
         android:textAllCaps="false"
         android:textColor="?attr/colorOnPrimary"
         android:textSize="20sp"
         android:textStyle="normal"/>
-
+    </LinearLayout>
+  </LinearLayout>
     <Switch
         android:id="@+id/toggleMetric"
         android:layout_width="match_parent"
@@ -133,15 +160,16 @@
       android:layout_height="wrap_content"
       android:layout_marginTop ="15dp"
       android:gravity="center"
-      android:orientation="horizontal"
+      android:orientation="vertical"
       app:layout_constraintTop_toBottomOf="@+id/layout2">
 
     <Button
         android:id="@+id/save"
-        android:layout_width="125dp"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginHorizontal="15dp"
-        android:background="@drawable/round_edit_text"
+        android:layout_marginTop ="15dp"
+        android:background="@drawable/round_button_1"
         android:padding="5dp"
         android:text="Save"
         android:layout_gravity="center_vertical"
@@ -151,10 +179,11 @@
 
     <Button
         android:id="@+id/signOut"
-        android:layout_width="125dp"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginHorizontal="15dp"
-        android:background="@drawable/round_edit_text"
+        android:layout_marginTop ="25dp"
+        android:background="@drawable/round_button_1"
         android:padding="5dp"
         android:text="Sign Out"
         android:layout_gravity="center_vertical"

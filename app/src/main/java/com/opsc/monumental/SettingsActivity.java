@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -87,6 +88,29 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         toggleMetric = (Switch) findViewById(R.id.toggleMetric);
 
         toggleImperial = (Switch) findViewById(R.id.toggleImperial);
+        toggleMetric.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(toggleMetric.isChecked()){
+                    toggleImperial.setChecked(false);
+                }else if (!toggleMetric.isChecked()) {
+                    toggleImperial.setChecked(true);
+                }
+
+            }
+        });
+        toggleImperial.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(toggleImperial.isChecked()){
+                    toggleMetric.setChecked(false);
+                }else if (!toggleImperial.isChecked()) {
+                    toggleMetric.setChecked(true);
+                }
+
+            }
+        });
+
 
         String userID2 = mAuth2.getCurrentUser().getUid();
         ref2 = FirebaseDatabase.getInstance().getReference("Settings");
