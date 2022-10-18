@@ -31,6 +31,13 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class FetchData extends AsyncTask<Object,String,String> {
+
+    //code attribution
+    //title: Current Location and Nearby Places On Map in Android Studio |Java| Android Studio Tutorial
+    //author: Learn With Deeksha
+    //Date: Feb 22, 2022
+    //url: https://www.youtube.com/watch?v=e_YLWSNMfZg
+
     String googleNearbyPlacesData;
     GoogleMap googleMap;
     String url;

@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
+    //creating relevant variables
     private Button registerButton, redirectButton;
 
     private EditText firstName, lastName, emailAddress, password;
@@ -30,6 +31,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        //initializing relevant UI variables on create
         firstName = (EditText) findViewById(R.id.firstName);
         lastName = (EditText) findViewById(R.id.lastName);
         emailAddress = (EditText) findViewById(R.id.emailAddress);
@@ -59,15 +61,18 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    //method that runs when user registers account
     public void registerUser() {
+        //creating and populating string variables with users entered details
         String fn = firstName.getText().toString();
         String ln = lastName.getText().toString();
         String email = emailAddress.getText().toString();
         String pass = password.getText().toString();
-
+        //setting users default setting preferences
         String defaultSystem = "Metric";
         String defaultPreference = "shopping_mall";
 
+        //if statement which checks that users entered details are not blank
         if(TextUtils.isEmpty(fn)) {
             firstName.setError("This field is required.");
             firstName.requestFocus();
@@ -84,6 +89,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             password.setError("This field is required.");
             password.requestFocus();
         }
+        //assuming user filled in all required details, the users relevant details are saved into the database
         else {
             mAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override

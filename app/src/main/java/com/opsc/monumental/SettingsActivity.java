@@ -28,6 +28,7 @@ import java.util.HashMap;
 
 public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
+    //creating relevant variables
     TextView username;
     Button signOut, saveBtn, cancelBtn;
     Spinner landmarkTypes;
@@ -48,6 +49,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        //initializing relevant variables
         mAuth = FirebaseAuth.getInstance();
 
         mAuth2 = FirebaseAuth.getInstance();
@@ -59,15 +61,18 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         String userID = mAuth.getCurrentUser().getUid();
         ref = FirebaseDatabase.getInstance().getReference("Users");
 
+        //creating a listener to check for changes to user settings
         ref.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //assigning user value retreived from User class
                 User fullName = snapshot.getValue(User.class);
 
                 if(fullName != null) {
                     String fn = fullName.firstName;
                     String ln = fullName.lastName;
 
+                    //setting
                     username.setText(fn + " " + ln);
                 }
             }
@@ -77,7 +82,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
             }
         });
-
+        //style and give data to drop down menu
         landmarkTypes = (Spinner) findViewById(R.id.landmarkSelect);
 
         ArrayAdapter<CharSequence> ar = ArrayAdapter.createFromResource(
@@ -89,7 +94,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         ar.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         landmarkTypes.setAdapter(ar);
 
-
+        //get users landmark preference
         ref2 = FirebaseDatabase.getInstance().getReference("Settings");
         ref2.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -114,6 +119,8 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         toggleMetric = (Switch) findViewById(R.id.toggleMetric);
 
         toggleImperial = (Switch) findViewById(R.id.toggleImperial);
+
+        //changes all details displayed to either the metric system or imperial according to users preference
         toggleMetric.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -127,6 +134,8 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
             }
         });
+        //changes all details displayed to either the metric system or imperial according to users preference
+
         toggleImperial.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -141,9 +150,10 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
             }
         });
 
-
+        //get users landmark preferences
         ref2 = FirebaseDatabase.getInstance().getReference("Settings");
 
+        //when page is initially loaded this method will set users saved setting preferences
         ref2.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -171,6 +181,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
         saveBtn = (Button) findViewById(R.id.save);
 
+        //button click which will save all users setting preferences to the database
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -199,6 +210,8 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
         cancelBtn = (Button) findViewById(R.id.cancel);
 
+        //button on click to close settings page without saving any changes
+
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -207,6 +220,8 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         });
 
         signOut = (Button) findViewById(R.id.signOut);
+
+        //button on click to sign user out
 
         signOut.setOnClickListener(new View.OnClickListener() {
             @Override

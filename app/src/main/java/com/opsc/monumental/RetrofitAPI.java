@@ -6,7 +6,7 @@ import com.opsc.monumental.Model.GooglePlaceModel.GoogleResponseModel;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Url;
-
+//creating an interface to get relevant APIs
 public interface RetrofitAPI {
 
     @GET

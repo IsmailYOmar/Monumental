@@ -66,6 +66,13 @@ import retrofit2.Response;
 
 public class NavigationActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+    //code attribution
+    //title: Current Location and Nearby Places On Map in Android Studio |Java| Android Studio Tutorial
+    //author: Learn With Deeksha
+    //Date: Feb 22, 2022
+    //url: https://www.youtube.com/watch?v=e_YLWSNMfZg
+
+    //creating relevant variables
         FirebaseAuth mAuth;
         private ActivityNavigationBinding binding;
         private GoogleMap mGoogleMap;
