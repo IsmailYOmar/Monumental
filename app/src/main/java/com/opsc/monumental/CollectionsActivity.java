@@ -1,14 +1,18 @@
 package com.opsc.monumental;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.libraries.places.api.Places;
@@ -37,9 +41,8 @@ public class CollectionsActivity extends AppCompatActivity {
     private FusedLocationProviderClient fusedLocationProviderClient;
 
     ListView list;
-
-    ArrayList<FavouriteList> arrayList;
-
+    ArrayList<FavouriteList> arrList = new ArrayList<>();
+    FavouriteAdapter arrAd;
     DatabaseReference ref;
 
     @Override
@@ -48,8 +51,6 @@ public class CollectionsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_collections);
 
         list = (ListView) findViewById(R.id.statisticsList);
-
-        arrayList = new ArrayList<FavouriteList>();
 
         // Construct a PlacesClient
         Places.initialize(getApplicationContext(), BuildConfig.MAPS_API_KEY);
@@ -64,20 +65,39 @@ public class CollectionsActivity extends AppCompatActivity {
 
         String userID = mAuth.getCurrentUser().getUid();
 
-        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.list_item2, arrayList);
+        List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME,
+                Place.Field.ADDRESS,Place.Field.PHONE_NUMBER,Place.Field.WEBSITE_URI);
 
-        ref.child(userID).addChildEventListener(new ChildEventListener() {
+        arrAd = new FavouriteAdapter(CollectionsActivity.this, R.layout.list_item2, R.id.field_NAME , arrList);
+        list.setAdapter(arrAd);
+
+
+
+        ref.orderByChild(userID).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
-                Favourite fav = snapshot.getValue(Favourite.class);
+                String id = snapshot.getValue(Favourite.class).getLocationID();
 
-                String id = fav.locationID;
+                if (id != null) {
+                    final FetchPlaceRequest request = FetchPlaceRequest.newInstance(id, placeFields);
 
-                List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME,
-                        Place.Field.ADDRESS,Place.Field.PHONE_NUMBER,Place.Field.WEBSITE_URI);
+                    placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
+                        Place result = response.getPlace();
+                        arrList.add(new FavouriteList(result.getName(), result.getAddress(),
+                                result.getPhoneNumber(), ""));
 
-
+                        arrAd.notifyDataSetChanged();
+                    }).addOnFailureListener((exception) -> {
+                        if (exception instanceof ApiException) {
+                            final ApiException apiException = (ApiException) exception;
+                            Log.e(TAG, "Place not found: " + exception.getMessage());
+                            final int statusCode = apiException.getStatusCode();
+                            // TODO: Handle error with given status code.
+                        }
+                    });
+                    arrAd.notifyDataSetChanged();
+                }
             }
 
             @Override

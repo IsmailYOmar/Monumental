@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class FavouriteAdapter extends ArrayAdapter<FavouriteList> {
 
-    public FavouriteAdapter(@NonNull Context context, ArrayList<FavouriteList> arrayList) {
+    public FavouriteAdapter(@NonNull Context context, int list_item2, int field_NAME, ArrayList<FavouriteList> arrayList) {
 
         // pass the context and arrayList for the super
         // constructor of the ArrayAdapter class

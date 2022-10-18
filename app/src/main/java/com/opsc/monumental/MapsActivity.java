@@ -351,18 +351,19 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             favBtn.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    Favourite add = new Favourite(locationID);
-                                    FirebaseDatabase.getInstance().getReference("Favourites").child(mAuth.getCurrentUser().getUid()).setValue(add).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if(task.isSuccessful()) {
-                                                Toast.makeText(MapsActivity.this, "Successful", Toast.LENGTH_SHORT).show();
-                                            }
-                                            else {
-                                                Toast.makeText(MapsActivity.this, "Unsuccessful.", Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-                                    });
+                                    Favourite add = new Favourite(mAuth.getCurrentUser().getUid(),locationID);
+                                    FirebaseDatabase.getInstance().getReference("Favourites").child(favID).push()
+                                            .setValue(add).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if(task.isSuccessful()) {
+                                                        Toast.makeText(MapsActivity.this, "Successful", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                    else {
+                                                        Toast.makeText(MapsActivity.this, "Unsuccessful.", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            });
                                 }
                             });
                             directionsBtn.setOnClickListener(new View.OnClickListener() {
@@ -628,9 +629,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 favBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Favourite add = new Favourite(locationID);
-                        FirebaseDatabase.getInstance().getReference("Favourites").child(favID).push().child("UserID: " +
-                                mAuth.getCurrentUser().getUid()).setValue(add).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        Favourite add = new Favourite(mAuth.getCurrentUser().getUid(),locationID);
+                        FirebaseDatabase.getInstance().getReference("Favourites").child(favID).push()
+                                .setValue(add).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()) {
