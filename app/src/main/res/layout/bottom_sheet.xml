@@ -11,16 +11,20 @@
     app:behavior_peekHeight="180dp"
     app:layout_behavior="@string/bottom_sheet_behavior">
 
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="10dp">
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center|top"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="5dp"
         android:src="@drawable/line"></ImageView>
     <LinearLayout
         android:id="@+id/timeLayout"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -83,5 +87,5 @@
         android:scrollbars="none"
         tools:listitem="@layout/step_item_layout" />
 
-
+    </LinearLayout>
 </RelativeLayout>

@@ -42,6 +42,12 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.chip.ChipGroup;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.opsc.monumental.Model.DirectionPlaceModel.DirectionLegModel;
 import com.opsc.monumental.Model.DirectionPlaceModel.DirectionResponseModel;
@@ -60,6 +66,7 @@ import retrofit2.Response;
 
 public class NavigationActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+        FirebaseAuth mAuth;
         private ActivityNavigationBinding binding;
         private GoogleMap mGoogleMap;
         private boolean  isTrafficEnable;
@@ -82,6 +89,8 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
         // The geographical location where the device is currently located. That is, the last-known
         // location retrieved by the Fused Location Provider.
         private Location lastKnownLocation;
+        DatabaseReference ref;
+        String units ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +106,24 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
             Window w = getWindow();
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
+        mAuth = FirebaseAuth.getInstance();
+        String userID = mAuth.getCurrentUser().getUid();
+        ref = FirebaseDatabase.getInstance().getReference("Settings");
+        ref.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Setting set = snapshot.getValue(Setting.class);
+
+                if(set != null) {
+                    units= set.selectedSystem;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         retrofitAPI = RetrofitClient.getRetrofitClient().create(RetrofitAPI.class);
 
@@ -146,16 +173,16 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
                 if (checkedId != -1) {
                     switch (checkedId) {
                         case R.id.btnChipDriving:
-                            getDirection("driving");
+                            getDirection("driving", units);
                             break;
                         case R.id.btnChipWalking:
-                            getDirection("walking");
+                            getDirection("walking", units);
                             break;
                         case R.id.btnChipBike:
-                            getDirection("bicycling");
+                            getDirection("bicycling", units);
                             break;
                         case R.id.btnChipTrain:
-                            getDirection("transit");
+                            getDirection("transit", units);
                             break;
                     }
                 }
@@ -164,13 +191,14 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
 
     }
 
-    private void getDirection(String mode) {
+    private void getDirection(String mode, String units) {
 
         if (locationPermissionGranted) {
             String url = "https://maps.googleapis.com/maps/api/directions/json?" +
                     "origin=" + lastKnownLocation.getLatitude() + "," + lastKnownLocation.getLongitude() +
                     "&destination=" + endLat + "," + endLng +
                     "&mode=" + mode +
+                    "&units="+ units +
                     "&key=AIzaSyDZ2EP0ZUjVnNSp846Vifwsm2qBwYUjvU8";
 
             retrofitAPI.getDirection(url).enqueue(new Callback<DirectionResponseModel>() {
@@ -248,10 +276,10 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
                                 mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds(startLocation, endLocation), 14));
 
                             } else {
-                                Toast.makeText(NavigationActivity.this, "No route find", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(NavigationActivity.this, "No route found", Toast.LENGTH_SHORT).show();
                             }
                         } else {
-                            Toast.makeText(NavigationActivity.this, "No route find", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(NavigationActivity.this, "No route found", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Log.d("TAG", "onResponse: " + response);
@@ -340,7 +368,7 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
                                 mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(lastKnownLocation.getLatitude(),
                                                 lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-                                getDirection("driving");
+                                getDirection("driving" , units);
                             }
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");

@@ -1,8 +1,5 @@
 package com.opsc.monumental;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +12,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,10 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -121,10 +118,10 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(toggleMetric.isChecked()){
-                    newSystem = "Metric";
+                    newSystem = "metric";
                     toggleImperial.setChecked(false);
                 }else if (!toggleMetric.isChecked()) {
-                    newSystem = "Imperial";
+                    newSystem = "imperial";
                     toggleImperial.setChecked(true);
                 }
 
@@ -134,10 +131,10 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(toggleImperial.isChecked()){
-                    newSystem = "Imperial";
+                    newSystem = "imperial";
                     toggleMetric.setChecked(false);
                 }else if (!toggleImperial.isChecked()) {
-                    newSystem = "Metric";
+                    newSystem = "metric";
                     toggleMetric.setChecked(true);
                 }
 
@@ -155,11 +152,11 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                 if(set != null) {
                     String system = set.selectedSystem;
 
-                    if(system.equals("Metric")) {
+                    if(system.equals("metric")) {
                         toggleMetric.setChecked(true);
                         toggleImperial.setChecked(false);
                     }
-                    else if(system.equals("Imperial")) {
+                    else if(system.equals("imperial")) {
                         toggleMetric.setChecked(false);
                         toggleImperial.setChecked(true);
                     }
