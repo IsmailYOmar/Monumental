@@ -13,7 +13,10 @@ import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,20 +26,25 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     TextView username;
-    Button signOut, saveBtn;
+    Button signOut, saveBtn, cancelBtn;
     Spinner landmarkTypes;
     Switch toggleMetric;
     Switch toggleImperial;
 
+    String newSystem;
+
     FirebaseAuth mAuth;
     FirebaseAuth mAuth2;
+    FirebaseAuth mAuth3;
     DatabaseReference ref;
     DatabaseReference ref2;
+    DatabaseReference ref3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +54,8 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         mAuth = FirebaseAuth.getInstance();
 
         mAuth2 = FirebaseAuth.getInstance();
+
+        mAuth3 = FirebaseAuth.getInstance();
 
         username = (TextView) findViewById(R.id.username);
 
@@ -80,8 +90,27 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         );
 
         ar.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
         landmarkTypes.setAdapter(ar);
+
+        String userID2 = mAuth2.getCurrentUser().getUid();
+        ref2 = FirebaseDatabase.getInstance().getReference("Settings");
+        ref2.child(userID2).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Setting set = snapshot.getValue(Setting.class);
+
+                if(set != null) {
+                    String preference = set.selectedPreference;
+                    int position = ar.getPosition(preference);
+                    landmarkTypes.setSelection(position);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         landmarkTypes.setOnItemSelectedListener(this);
 
@@ -92,8 +121,10 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(toggleMetric.isChecked()){
+                    newSystem = "Metric";
                     toggleImperial.setChecked(false);
                 }else if (!toggleMetric.isChecked()) {
+                    newSystem = "Imperial";
                     toggleImperial.setChecked(true);
                 }
 
@@ -103,19 +134,20 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(toggleImperial.isChecked()){
+                    newSystem = "Imperial";
                     toggleMetric.setChecked(false);
                 }else if (!toggleImperial.isChecked()) {
+                    newSystem = "Metric";
                     toggleMetric.setChecked(true);
                 }
 
             }
         });
 
-
-        String userID2 = mAuth2.getCurrentUser().getUid();
+        String userID3 = mAuth2.getCurrentUser().getUid();
         ref2 = FirebaseDatabase.getInstance().getReference("Settings");
 
-        ref2.child(userID2).addListenerForSingleValueEvent(new ValueEventListener() {
+        ref2.child(userID3).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Setting set = snapshot.getValue(Setting.class);
@@ -142,6 +174,41 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
         saveBtn = (Button) findViewById(R.id.save);
 
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String newPreference = landmarkTypes.getSelectedItem().toString();
+                String userID4 = mAuth3.getCurrentUser().getUid();
+                ref3 = FirebaseDatabase.getInstance().getReference("Settings").child(userID4);
+                HashMap hashMap = new HashMap();
+                hashMap.put("selectedPreference", newPreference);
+                hashMap.put("selectedSystem", newSystem);
+
+                ref3.updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        if(task.isSuccessful()) {
+                            Toast.makeText(SettingsActivity.this, "Settings updated.", Toast.LENGTH_LONG).show();
+                            startActivity( new Intent(SettingsActivity.this, MapsActivity.class));
+                        }
+                        else {
+                            Toast.makeText(SettingsActivity.this, "Update failed. " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+
+            }
+        });
+
+        cancelBtn = (Button) findViewById(R.id.cancel);
+
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity( new Intent(SettingsActivity.this, MapsActivity.class));
+            }
+        });
+
         signOut = (Button) findViewById(R.id.signOut);
 
         signOut.setOnClickListener(new View.OnClickListener() {
@@ -157,6 +224,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
         String select = adapterView.getItemAtPosition(i).toString();
     }
 

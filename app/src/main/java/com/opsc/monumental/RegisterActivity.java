@@ -68,7 +68,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         String pass = password.getText().toString();
 
         String defaultSystem = "Metric";
-        String defaultPreference = "Mall";
+        String defaultPreference = "shopping_mall";
 
         if(TextUtils.isEmpty(fn)) {
             firstName.setError("This field is required.");
