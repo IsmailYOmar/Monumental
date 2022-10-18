@@ -37,7 +37,7 @@
 
             <TextView
                 android:id="@+id/field_ADDRESS"
-                android:layout_width="293dp"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:layout_marginStart="10dp"
@@ -81,40 +81,6 @@
                 android:textFontWeight="@integer/material_motion_duration_long_2"
                 android:textSize="14dp"
                 android:textStyle="bold" />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="200dp"
-                android:layout_marginTop="-110dp"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="right"
-                    android:layout_marginStart="120dp"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/round_button">
-
-                    <Button
-                        android:id="@+id/favouriteBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/ic_baseline_star_24"
-                        android:backgroundTint="@color/color_3" />
-                </LinearLayout>
-
-                <Button
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/round_button_1"
-                    android:text="Directions"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="18dp" />
-            </LinearLayout>
 
         </LinearLayout>
     </RelativeLayout>

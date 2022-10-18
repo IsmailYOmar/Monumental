@@ -102,7 +102,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private String API = "&key=AIzaSyDZ2EP0ZUjVnNSp846Vifwsm2qBwYUjvU8";
 
     private ActivityMapsBinding binding;
-    Button Collections,settings1,settings2,directions,restaurant,bank,park,mall,gps,pins;
+    Button collections,settings1,settings2,directions,restaurant,bank,park,mall,gps,pins;
     LinearLayout list;
     androidx.appcompat.widget.SearchView searchView;
     BottomSheetBehavior bottomSheetBehavior;
@@ -166,6 +166,15 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         //searchView= findViewById(R.id.search_bar3);
         settings1= (Button) findViewById(R.id.settings1);
         settings2= (Button) findViewById(R.id.settings2);
+        collections = (Button) findViewById(R.id.Collections);
+
+        collections.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity( new Intent(MapsActivity.this, CollectionsActivity.class));
+            }
+        });
+
         directions = findViewById(R.id.directions);
         settings1= (Button) findViewById(R.id.settings1);
         restaurant = (Button) findViewById(R.id.restaurants);
@@ -343,7 +352,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                                 @Override
                                 public void onClick(View view) {
                                     Favourite add = new Favourite(locationID);
-                                    FirebaseDatabase.getInstance().getReference("Favourites").child(favID).push().child(mAuth.getCurrentUser().getUid()).setValue(add).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    FirebaseDatabase.getInstance().getReference("Favourites").child(mAuth.getCurrentUser().getUid()).setValue(add).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if(task.isSuccessful()) {
