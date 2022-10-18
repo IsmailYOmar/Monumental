@@ -65,7 +65,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         String email = emailAddress.getText().toString();
         String pass = password.getText().toString();
 
-        String defaultSystem = "metric";
+        String defaultSystem = "Metric";
         String defaultPreference = "shopping_mall";
 
         if(TextUtils.isEmpty(fn)) {
