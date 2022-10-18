@@ -92,9 +92,9 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         ar.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         landmarkTypes.setAdapter(ar);
 
-        String userID2 = mAuth2.getCurrentUser().getUid();
+
         ref2 = FirebaseDatabase.getInstance().getReference("Settings");
-        ref2.child(userID2).addListenerForSingleValueEvent(new ValueEventListener() {
+        ref2.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Setting set = snapshot.getValue(Setting.class);
@@ -144,10 +144,10 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
             }
         });
 
-        String userID3 = mAuth2.getCurrentUser().getUid();
+
         ref2 = FirebaseDatabase.getInstance().getReference("Settings");
 
-        ref2.child(userID3).addListenerForSingleValueEvent(new ValueEventListener() {
+        ref2.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Setting set = snapshot.getValue(Setting.class);

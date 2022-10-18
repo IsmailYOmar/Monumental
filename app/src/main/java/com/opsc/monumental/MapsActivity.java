@@ -70,7 +70,11 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.opsc.monumental.databinding.ActivityMapsBinding;
 
 import java.io.IOException;
@@ -113,7 +117,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private boolean locationPermissionGranted;
     private static final int DEFAULT_ZOOM = 16;
     private static final int Request_code = 101;
-
+    DatabaseReference ref;
     // The geographical location where the device is currently located. That is, the last-known
     // location retrieved by the Fused Location Provider.
     private Location lastKnownLocation;
@@ -130,7 +134,23 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
 
-        user_pref="shopping_mall";
+        String userID = mAuth.getCurrentUser().getUid();
+        ref = FirebaseDatabase.getInstance().getReference("Settings");
+        ref.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Setting set = snapshot.getValue(Setting.class);
+
+                if(set != null) {
+                    user_pref= set.selectedPreference;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         binding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -281,7 +301,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                             myDialog.show();
 
-                            Button favBtn;
+                            Button favBtn,directionsBtn;
                             String favID = "";
                             String locationID = place.getId();
                             Button btnClose;
@@ -289,6 +309,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                                     field_WEBSITE_URI,field_BUSINESS_STATUS,field_RATING_total;
 
                             favBtn = (Button) myDialog.findViewById(R.id.favouriteBtn);
+                            directionsBtn = (Button) myDialog.findViewById(R.id.directionsBtn);
                             btnClose = (Button) myDialog.findViewById(R.id.btnClose);
 
 
@@ -335,11 +356,21 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                                     });
                                 }
                             });
+                            directionsBtn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    /*Intent i = new Intent(MapsActivity.this, NavigationActivity5.class);
+                                    i.putExtra("destinationID", locationID);
+                                    i.putExtra("currentPosition",lastKnownLocation);
+                                    startActivity(i);*/
+                                }
+                            });
 
                             btnClose.setOnClickListener(new View.OnClickListener() {
 
                                 @Override
                                 public void onClick(View view) {
+
                                     myDialog.dismiss();
                                 }
                             });
