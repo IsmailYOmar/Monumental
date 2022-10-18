@@ -1,188 +1,87 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="@drawable/round_edit_text"
+    android:elevation="7dp"
+    android:padding="20dp"
+    android:layout_marginHorizontal="5dp"
+    app:behavior_hideable="false"
+    app:behavior_peekHeight="180dp"
+    app:layout_behavior="@string/bottom_sheet_behavior">
 
 
-        <Button
-            android:id="@+id/settings1"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/ic_baseline_person_pin_24"
-            android:layout_gravity="top|left"
-            android:layout_marginTop="35dp"
-            android:layout_marginLeft="10dp"
-            app:layout_dodgeInsetEdges="top"/>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|top"
+        android:layout_marginTop="0dp"
+        android:src="@drawable/line"></ImageView>
+    <LinearLayout
+        android:id="@+id/timeLayout"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="bottom|right"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="250dp"
-            android:background="@drawable/round_button"
-            android:layout_marginEnd="20dp">
-            <Button
-                android:id="@+id/gps"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@drawable/ic_baseline_assistant_direction_24"
-                app:iconGravity="textStart"
-                app:iconPadding="0dp" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="bottom|right"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="325dp"
-            android:background="@drawable/round_button"
-            android:layout_marginEnd="20dp">
-        <Button
-            android:id="@+id/directions"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/ic_baseline_assistant_direction_24" />
+        <TextView
+            android:id="@+id/txtSheetTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/quantum_black_100"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtSheetDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/quantum_grey500"
+            android:textSize="20dp"
+            android:textStyle="bold" />
     </LinearLayout>
 
-        <FrameLayout
-            android:id="@+id/bottom_sheet1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center|bottom"
-            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-            app:behavior_hideable="false"
-            android:background="@drawable/round_sheet">
+    <TextView
+        android:id="@+id/txtSheetRoute"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/timeLayout"
+        android:layout_marginTop="10dp"
+        android:text="Fastest route"
+        android:textColor="@color/quantum_grey600"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/txtSheetRoute"
+        android:layout_marginTop="10dp"
+        android:background="@color/quantum_black_divider" />
+
+    <TextView
+        android:id="@+id/txtSheetSteps"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/view"
+        android:layout_marginTop="20dp"
+        android:text="Steps"
+        android:textColor="@color/quantum_black_text"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/stepRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtSheetSteps"
+        android:layout_marginTop="20dp"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        tools:listitem="@layout/step_item_layout" />
 
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|top"
-                android:layout_marginTop="15dp"
-                android:src="@drawable/line"></ImageView>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <Button
-                    android:id="@+id/settings2"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/ic_baseline_person_pin_24"
-                    android:layout_gravity="top|left"
-                    android:layout_marginTop="35dp"
-                    android:layout_marginLeft="10dp"
-                    android:visibility="gone"
-                    app:layout_dodgeInsetEdges="top"/>
-
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="35dp"
-                    android:id="@+id/search_bar"
-                    android:background="@drawable/round_edit_text"
-                    android:layout_gravity="center">
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="38dp"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:layout_width="70dp"
-                        android:layout_height="40dp"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:visibility="visible"
-                        android:text="Resturants"
-                        android:textColor="@color/white"
-                        android:textAllCaps="false"
-                        android:textSize="12dp"
-                        android:background="@drawable/round_button_1"></Button>
-
-                    <Button
-                        android:layout_width="70dp"
-                        android:layout_height="40dp"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:visibility="visible"
-                        android:text="Parks"
-                        android:textColor="@color/white"
-                        android:textAllCaps="false"
-                        android:textSize="12dp"
-                        android:background="@drawable/round_button_1"></Button>
-
-                    <Button
-                        android:layout_width="70dp"
-                        android:layout_height="40dp"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:visibility="visible"
-                        android:text="Malls"
-                        android:textColor="@color/white"
-                        android:textAllCaps="false"
-                        android:textSize="12dp"
-                        android:background="@drawable/round_button_1"></Button>
-
-                    <Button
-                        android:layout_width="70dp"
-                        android:layout_height="40dp"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:visibility="visible"
-                        android:text="Banks"
-                        android:textColor="@color/white"
-                        android:textAllCaps="false"
-                        android:textSize="12dp"
-                        android:background="@drawable/round_button_1"></Button>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/list"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="gone"
-                    android:orientation="vertical">
-                    <Button
-                        android:id="@+id/Collections"
-                        android:layout_width="350dp"
-                        android:layout_height="100dp"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="30dp"
-                        android:text="Collections"
-                        android:textColor="@color/white"
-                        android:textAllCaps="false"
-                        android:textSize="40dp"
-                        android:background="@drawable/round_button_1"></Button>
-                    <ListView
-                        android:id="@+id/List"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginStart="2dp"
-                        android:layout_marginBottom="0dp"
-                        android:divider="@null"
-                        android:paddingHorizontal="5dp"
-                        android:scrollbarSize="5dp"
-                        android:scrollbarStyle="insideInset"
-                        android:scrollbars="vertical"
-                        android:smoothScrollbar="true"
-                        android:transcriptMode="alwaysScroll" />
-                </LinearLayout>
-            </LinearLayout>
-        </FrameLayout>
-
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</RelativeLayout>

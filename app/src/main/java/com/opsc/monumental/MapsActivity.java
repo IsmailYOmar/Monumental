@@ -1,46 +1,34 @@
 package com.opsc.monumental;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.FragmentActivity;
-
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.util.Log;
-import android.view.KeyEvent;
+import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.SearchView;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
-import android.widget.SearchView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Status;
@@ -54,22 +42,16 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PointOfInterest;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -77,14 +59,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.opsc.monumental.databinding.ActivityMapsBinding;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener,
@@ -126,6 +102,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -295,6 +272,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                     mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                        @SuppressLint("PotentialBehaviorOverride")
                         @Override
                         public boolean onMarkerClick(@NonNull Marker marker) {
 
@@ -369,10 +347,19 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             directionsBtn.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    /*Intent i = new Intent(MapsActivity.this, NavigationActivity5.class);
-                                    i.putExtra("destinationID", locationID);
-                                    i.putExtra("currentPosition",lastKnownLocation);
-                                    startActivity(i);*/
+                                    String placeId = place.getId();
+                                    Double lat = result.getLatLng().latitude;
+                                    Double lng = result.getLatLng().longitude;
+
+                                    replaceFragment( new Fragment());
+
+
+                                    Intent intent = new Intent(MapsActivity.this, NavigationActivity.class);
+                                    intent.putExtra("placeId", placeId);
+                                    intent.putExtra("lat", marker.getPosition().latitude);
+                                    intent.putExtra("lng", marker.getPosition().longitude);
+
+                                    startActivity(intent);
                                 }
                             });
 
@@ -441,6 +428,13 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         mapFragment.getMapAsync(this);
     }
 
+    private void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.map,fragment);
+        fragmentTransaction.commit();
+    }
+
     @Override
     public void onMapReady(GoogleMap map) {
         // Prompt the user for permission.
@@ -449,6 +443,119 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         updateLocationUI();
         getDeviceLocation();
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @SuppressLint("PotentialBehaviorOverride")
+            @Override
+            public boolean onMarkerClick(@NonNull Marker marker) {
+                List<Place.Field> placeFields2 = Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.USER_RATINGS_TOTAL,
+                        Place.Field.LAT_LNG, Place.Field.ADDRESS,Place.Field.PHONE_NUMBER,Place.Field.RATING,Place.Field.WEBSITE_URI,
+                        Place.Field.OPENING_HOURS,Place.Field.BUSINESS_STATUS,Place.Field.TYPES,Place.Field.UTC_OFFSET);
+
+                final FetchPlaceRequest request = FetchPlaceRequest.newInstance(marker.getTitle(), placeFields2);
+                placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
+                    Place result2 = response.getPlace();
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(result2.getLatLng(),19));
+                    String location = result2.getName();
+                    mMap.addMarker(new MarkerOptions().position(result2.getLatLng()).title(location));
+                    //code landmark details here
+
+
+                myDialog.setContentView(R.layout.landmark_details);
+                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                lp.copyFrom(myDialog.getWindow().getAttributes());
+                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                lp.gravity = Gravity.BOTTOM;
+                myDialog.getWindow().setAttributes(lp);
+                myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                myDialog.show();
+
+                Button favBtn,directionsBtn;;
+                String favID = "";
+                String locationID = result2.getId();
+                Button btnClose;
+                TextView field_NAME, field_ADDRESS,field_PHONE_NUMBER,field_RATING,
+                        field_WEBSITE_URI,field_BUSINESS_STATUS,field_RATING_total;
+
+                favBtn = (Button) myDialog.findViewById(R.id.favouriteBtn);
+                btnClose = (Button) myDialog.findViewById(R.id.btnClose);
+                directionsBtn = (Button) myDialog.findViewById(R.id.directionsBtn);
+
+                field_NAME = (TextView) myDialog.findViewById(R.id.field_NAME);
+                field_PHONE_NUMBER = (TextView) myDialog.findViewById(R.id.field_PHONE_NUMBER);
+                field_ADDRESS= (TextView) myDialog.findViewById(R.id.field_ADDRESS);
+                field_RATING = (TextView) myDialog.findViewById(R.id.field_RATING);
+                field_RATING_total = (TextView) myDialog.findViewById(R.id.field_RATING_total);
+                field_WEBSITE_URI = (TextView) myDialog.findViewById(R.id.field_WEBSITE_URI);
+                field_BUSINESS_STATUS = (TextView) myDialog.findViewById(R.id.field_BUSINESS_STATUS);
+
+                field_NAME.setText(result2.getName());
+                field_PHONE_NUMBER.setText(result2.getPhoneNumber());
+                field_ADDRESS.setText(result2.getAddress());
+                String rating = String.valueOf(result2.getRating());
+                String rating_total =  String.valueOf(result2.getUserRatingsTotal());
+                field_RATING.setText(rating);
+                field_RATING_total.setText("(" +rating_total +")");
+                field_WEBSITE_URI.setText(String.valueOf(result2.getWebsiteUri()));
+
+
+                if(result2.isOpen() == null ){
+                    field_BUSINESS_STATUS.setText("");
+                }else if (result2.isOpen() == false){
+                    field_BUSINESS_STATUS.setText("Closed");
+                }else{
+                    field_BUSINESS_STATUS.setText("Open");
+                }
+
+                favBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Favourite add = new Favourite(mAuth.getCurrentUser().getUid(),locationID);
+                        FirebaseDatabase.getInstance().getReference("Favourites").child(favID).push()
+                                .setValue(add).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()) {
+                                    Toast.makeText(MapsActivity.this, "Successful", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    Toast.makeText(MapsActivity.this, "Unsuccessful.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                });
+                    directionsBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            String placeId = locationID;
+                            Double lat = result2.getLatLng().latitude;
+                            Double lng = result2.getLatLng().longitude;
+
+                            replaceFragment( new Fragment());
+
+
+                            Intent intent = new Intent(MapsActivity.this, NavigationActivity.class);
+                            intent.putExtra("placeId", placeId);
+                            intent.putExtra("lat", marker.getPosition().latitude);
+                            intent.putExtra("lng", marker.getPosition().longitude);
+
+                            startActivity(intent);
+                        }
+                    });
+
+                btnClose.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        myDialog.dismiss();
+                    }
+                });
+                });
+                return true;
+            }
+        });
 
 /*
         mMap.setOnPoiClickListener(new GoogleMap.OnPoiClickListener() {
@@ -522,18 +629,19 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             favBtn.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    Favourite add = new Favourite(locationID);
-                                    FirebaseDatabase.getInstance().getReference("Favourites").child(favID).push().child("UserID: " + mAuth.getCurrentUser().getUid()).setValue(add).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if(task.isSuccessful()) {
-                                                Toast.makeText(MapsActivity.this, "Successful", Toast.LENGTH_SHORT).show();
-                                            }
-                                            else {
-                                                Toast.makeText(MapsActivity.this, "Unsuccessful.", Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-                                    });
+                                    Favourite add = new Favourite(mAuth.getCurrentUser().getUid(),locationID);
+                                    FirebaseDatabase.getInstance().getReference("Favourites").child(favID).push()
+                                            .setValue(add).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if(task.isSuccessful()) {
+                                                        Toast.makeText(MapsActivity.this, "Successful", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                    else {
+                                                        Toast.makeText(MapsActivity.this, "Unsuccessful.", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            });
                                 }
                             });
 
@@ -563,99 +671,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             }
         });
 */
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(@NonNull Marker marker) {
-                List<Place.Field> placeFields2 = Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.USER_RATINGS_TOTAL,
-                        Place.Field.LAT_LNG, Place.Field.ADDRESS,Place.Field.PHONE_NUMBER,Place.Field.RATING,Place.Field.WEBSITE_URI,
-                        Place.Field.OPENING_HOURS,Place.Field.BUSINESS_STATUS,Place.Field.TYPES,Place.Field.UTC_OFFSET);
-
-                final FetchPlaceRequest request = FetchPlaceRequest.newInstance(marker.getTitle(), placeFields2);
-                placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
-                    Place result2 = response.getPlace();
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(result2.getLatLng(),19));
-                    String location = result2.getName();
-                    mMap.addMarker(new MarkerOptions().position(result2.getLatLng()).title(location));
-                    //code landmark details here
-
-
-                myDialog.setContentView(R.layout.landmark_details);
-                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-                lp.copyFrom(myDialog.getWindow().getAttributes());
-                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-                lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-                lp.gravity = Gravity.BOTTOM;
-                myDialog.getWindow().setAttributes(lp);
-                myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                myDialog.show();
-
-                Button favBtn;
-                String favID = "";
-                String locationID = result2.getId();
-                Button btnClose;
-                TextView field_NAME, field_ADDRESS,field_PHONE_NUMBER,field_RATING,
-                        field_WEBSITE_URI,field_BUSINESS_STATUS,field_RATING_total;
-
-                favBtn = (Button) myDialog.findViewById(R.id.favouriteBtn);
-                btnClose = (Button) myDialog.findViewById(R.id.btnClose);
-
-
-                field_NAME = (TextView) myDialog.findViewById(R.id.field_NAME);
-                field_PHONE_NUMBER = (TextView) myDialog.findViewById(R.id.field_PHONE_NUMBER);
-                field_ADDRESS= (TextView) myDialog.findViewById(R.id.field_ADDRESS);
-                field_RATING = (TextView) myDialog.findViewById(R.id.field_RATING);
-                field_RATING_total = (TextView) myDialog.findViewById(R.id.field_RATING_total);
-                field_WEBSITE_URI = (TextView) myDialog.findViewById(R.id.field_WEBSITE_URI);
-                field_BUSINESS_STATUS = (TextView) myDialog.findViewById(R.id.field_BUSINESS_STATUS);
-
-                field_NAME.setText(result2.getName());
-                field_PHONE_NUMBER.setText(result2.getPhoneNumber());
-                field_ADDRESS.setText(result2.getAddress());
-                String rating = String.valueOf(result2.getRating());
-                String rating_total =  String.valueOf(result2.getUserRatingsTotal());
-                field_RATING.setText(rating);
-                field_RATING_total.setText("(" +rating_total +")");
-                field_WEBSITE_URI.setText(String.valueOf(result2.getWebsiteUri()));
-
-
-                if(result2.isOpen() == null ){
-                    field_BUSINESS_STATUS.setText("");
-                }else if (result2.isOpen() == false){
-                    field_BUSINESS_STATUS.setText("Closed");
-                }else{
-                    field_BUSINESS_STATUS.setText("Open");
-                }
-
-                favBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Favourite add = new Favourite(mAuth.getCurrentUser().getUid(),locationID);
-                        FirebaseDatabase.getInstance().getReference("Favourites").child(favID).push()
-                                .setValue(add).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if(task.isSuccessful()) {
-                                    Toast.makeText(MapsActivity.this, "Successful", Toast.LENGTH_SHORT).show();
-                                }
-                                else {
-                                    Toast.makeText(MapsActivity.this, "Unsuccessful.", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-                    }
-                });
-
-                btnClose.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View view) {
-                        myDialog.dismiss();
-                    }
-                });
-                });
-                return true;
-            }
-        });
 
         bank.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -771,10 +786,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         overridePendingTransition(0, 0);
     }
 
-
-    public void hideSoftKeyBoard(){
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-    }
     private void getLocationPermission() {
         /*
          * Request location permission, so that we can get the location of the
