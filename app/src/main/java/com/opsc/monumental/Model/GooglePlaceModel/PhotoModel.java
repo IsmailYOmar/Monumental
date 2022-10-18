@@ -7,6 +7,11 @@ import java.util.List;
 
 public class PhotoModel {
 
+    //title: Current Location and Nearby Places On Map in Android Studio |Java| Android Studio Tutorial
+    //author: Learn With Deeksha
+    //Date: Feb 22, 2022
+    //url: https://www.youtube.com/watch?v=e_YLWSNMfZg
+
     @SerializedName("height")
     @Expose
     private Integer height;

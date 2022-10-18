@@ -15,6 +15,12 @@ import java.util.List;
 
 public class DirectionStepAdapter extends RecyclerView.Adapter<DirectionStepAdapter.ViewHolder> {
 
+    //directions DirectionStepAdapter extends RecyclerView to display data to user from http request
+    //
+    //title: Near Me | Firebase, Google Map, Place & Direction API's | Intro & Setup Project Android Java Part(1)
+    //author: Muhammad Adnan
+    //Date: Mar 6, 2021
+    //url" https://www.youtube.com/playlist?list=PLpQFhyCcxiCqDFYQabluYIYsNSsCFMNFk & https://github.com/adnan0786/NearMeJavaApplication
     private List<DirectionStepModel> directionStepModels;
 
     @NonNull

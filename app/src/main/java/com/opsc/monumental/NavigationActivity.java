@@ -66,11 +66,18 @@ import retrofit2.Response;
 
 public class NavigationActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    //code attribution
+    //draw path to destination and display distance and eta
+    //
     //title: Current Location and Nearby Places On Map in Android Studio |Java| Android Studio Tutorial
     //author: Learn With Deeksha
     //Date: Feb 22, 2022
     //url: https://www.youtube.com/watch?v=e_YLWSNMfZg
+
+    //title: Google api documentation
+    //author: Google
+    //url: https://developers.google.com/maps/documentation/android-sdk/get-api-key
+    //url: https://developers.google.com/maps/documentation/directions
+
 
     //creating relevant variables
         FirebaseAuth mAuth;
@@ -115,6 +122,8 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
         }
         mAuth = FirebaseAuth.getInstance();
         String userID = mAuth.getCurrentUser().getUid();
+
+        //get user defined units
         ref = FirebaseDatabase.getInstance().getReference("Settings");
         ref.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -200,14 +209,16 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
 
     private void getDirection(String mode, String units) {
 
+        //create get request to directions api
         if (locationPermissionGranted) {
             String url = "https://maps.googleapis.com/maps/api/directions/json?" +
                     "origin=" + lastKnownLocation.getLatitude() + "," + lastKnownLocation.getLongitude() +
                     "&destination=" + endLat + "," + endLng +
                     "&mode=" + mode +
                     "&units="+ units.toLowerCase() +
-                    "&key=AIzaSyDZ2EP0ZUjVnNSp846Vifwsm2qBwYUjvU8";
+                    "&key="+ BuildConfig.NEARBY_API_KEY;
 
+            //past json data to fragments
             retrofitAPI.getDirection(url).enqueue(new Callback<DirectionResponseModel>() {
                 @Override
                 public void onResponse(Call<DirectionResponseModel> call, Response<DirectionResponseModel> response) {
@@ -318,6 +329,7 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
 
         mGoogleMap = googleMap;
 
+        //check permission and move map camera to current location
 
         updateLocationUI();
         getDeviceLocation();
@@ -326,7 +338,7 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
     }
 
 
-
+    //check location permission and move map camera to current location
     private void getLocationPermission() {
         /*
          * Request location permission, so that we can get the location of the
@@ -430,6 +442,7 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
             super.onBackPressed();
     }
 
+    //decode data from List<com.google.maps.model.LatLng>
     private List<com.google.maps.model.LatLng> decode(String points) {
 
         int len = points.length();
@@ -462,6 +475,7 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
             path.add(new com.google.maps.model.LatLng(lat * 1e-5, lng * 1e-5));
         }
 
+        //return path to destination
         return path;
 
     }

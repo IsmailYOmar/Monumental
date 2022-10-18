@@ -17,6 +17,13 @@ public class DownloadURL {
     //Date: Feb 22, 2022
     //url: https://www.youtube.com/watch?v=e_YLWSNMfZg
 
+    //get data and return data from url
+    //
+    //title: Near Me | Firebase, Google Map, Place & Direction API's | Intro & Setup Project Android Java Part(1)
+    //author: Muhammad Adnan
+    //Date: Mar 6, 2021
+    //url" https://www.youtube.com/playlist?list=PLpQFhyCcxiCqDFYQabluYIYsNSsCFMNFk & https://github.com/adnan0786/NearMeJavaApplication
+
     public String retreiveUrl(String url) throws IOException{
         String urlData = "";
         HttpURLConnection httpURLConnection = null;

@@ -10,6 +10,13 @@ import java.util.List;
 
 public class GooglePlaceModel {
 
+    //Model to hold data from GooglePlace api
+    //
+    //title: Near Me | Firebase, Google Map, Place & Direction API's | Intro & Setup Project Android Java Part(1)
+    //author: Muhammad Adnan
+    //Date: Mar 6, 2021
+    //url" https://www.youtube.com/playlist?list=PLpQFhyCcxiCqDFYQabluYIYsNSsCFMNFk & https://github.com/adnan0786/NearMeJavaApplication
+
     @SerializedName("business_status")
     @Expose
     private String businessStatus;

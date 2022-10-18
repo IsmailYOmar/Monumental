@@ -5,6 +5,11 @@ import com.google.gson.annotations.SerializedName;
 
 public class DirectionDurationModel {
 
+    //title: Current Location and Nearby Places On Map in Android Studio |Java| Android Studio Tutorial
+    //author: Learn With Deeksha
+    //Date: Feb 22, 2022
+    //url: https://www.youtube.com/watch?v=e_YLWSNMfZg
+
     @SerializedName("text")
     @Expose
     private String text;

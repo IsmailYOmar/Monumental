@@ -66,6 +66,13 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         GoogleMap.OnMyLocationClickListener,
         OnMapReadyCallback {
 
+
+    //title: Google api documentation
+    //author: Google
+    //url: https://developers.google.com/maps/documentation/android-sdk/get-api-key
+    //url: https://developers.google.com/maps/documentation/directions
+
+
     FirebaseAuth mAuth;
 
     Dialog myDialog;
@@ -105,11 +112,13 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         mAuth = FirebaseAuth.getInstance();
 
+        //remove status bar
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window w = getWindow();
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
 
+        //get user landmark preference
         String userID = mAuth.getCurrentUser().getUid();
         ref = FirebaseDatabase.getInstance().getReference("Settings");
         ref.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -144,6 +153,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         settings2= (Button) findViewById(R.id.settings2);
         collections = (Button) findViewById(R.id.Collections);
 
+        //open collections list
         collections.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -158,6 +168,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         park = (Button) findViewById(R.id.parks);
         bank = (Button) findViewById(R.id.banks);
 
+        //open setting page
         settings1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -167,6 +178,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         settings2= (Button) findViewById(R.id.settings2);
 
+        //open settings page
         settings2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -174,6 +186,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             }
         });
 
+        //animate map camera back to user location
         gps= (Button) findViewById(R.id.gps);
         gps.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -182,6 +195,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 getDeviceLocation();
             }
         });
+
+        //drop land mark pins according to user pref
         pins= (Button) findViewById(R.id.pins);
         pins.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,7 +218,10 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 fetchData.execute(dataFetch);
             }
         });
+
         list= findViewById(R.id.list);
+
+        //define bottom sheet behaviour on button visibility depending on state
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         bottomSheetBehavior.setPeekHeight(480);
@@ -261,14 +279,17 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     String location = result.getName().toString();
                     Marker mMarker = mMap.addMarker(new MarkerOptions().position(result.getLatLng()).title(location));
                     //code landmark details here
-
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+                    //call custom user details on marker click
                     mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                         @SuppressLint("PotentialBehaviorOverride")
                         @Override
                         public boolean onMarkerClick(@NonNull Marker marker) {
 
                             marker.hideInfoWindow();
+
+                            //open dialog box with details
 
                             myDialog.setContentView(R.layout.landmark_details);
                             WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
@@ -290,7 +311,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             favBtn = (Button) myDialog.findViewById(R.id.favouriteBtn);
                             directionsBtn = (Button) myDialog.findViewById(R.id.directionsBtn);
                             btnClose = (Button) myDialog.findViewById(R.id.btnClose);
-
 
                             field_NAME = (TextView) myDialog.findViewById(R.id.field_NAME);
                             field_PHONE_NUMBER = (TextView) myDialog.findViewById(R.id.field_PHONE_NUMBER);
@@ -318,6 +338,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                                 field_BUSINESS_STATUS.setText("Open");
                             }
 
+
+                            //save to collections list
                             favBtn.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -336,6 +358,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                                             });
                                 }
                             });
+
+                            //call NavigationActivity and replace fragment
                             directionsBtn.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -346,6 +370,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                                     replaceFragment( new Fragment());
 
 
+                                    // call activity and pass location data
                                     Intent intent = new Intent(MapsActivity.this, NavigationActivity.class);
                                     intent.putExtra("placeId", placeId);
                                     intent.putExtra("lat", marker.getPosition().latitude);
@@ -355,6 +380,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                                 }
                             });
 
+                            //close dialog box
                             btnClose.setOnClickListener(new View.OnClickListener() {
 
                                 @Override
@@ -431,11 +457,11 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     public void onMapReady(GoogleMap map) {
         // Prompt the user for permission.
         mMap = map;
-
-
+        // and move map camera to current location
         updateLocationUI();
         getDeviceLocation();
 
+        //call custom user details on marker click
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @SuppressLint("PotentialBehaviorOverride")
             @Override
@@ -452,7 +478,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     mMap.addMarker(new MarkerOptions().position(result2.getLatLng()).title(location));
                     //code landmark details here
 
-
+                    //open dialog box with details
                 myDialog.setContentView(R.layout.landmark_details);
                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                 lp.copyFrom(myDialog.getWindow().getAttributes());
@@ -499,7 +525,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 }else{
                     field_BUSINESS_STATUS.setText("Open");
                 }
-
+                    //save to collections list
                 favBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -518,6 +544,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                         });
                     }
                 });
+                    //call NavigationActivity and replace fragment
                     directionsBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -536,7 +563,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             startActivity(intent);
                         }
                     });
-
+                    //close dialog box
                 btnClose.setOnClickListener(new View.OnClickListener() {
 
                     @Override
@@ -549,6 +576,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             }
         });
 
+        //on poi click will be added again later
 /*
         mMap.setOnPoiClickListener(new GoogleMap.OnPoiClickListener() {
             @Override
@@ -664,6 +692,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         });
 */
 
+        //drop pins on all nearby banks
         bank.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -686,6 +715,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             }
         });
 
+        //drop pins on all nearby restaurants
         restaurant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -708,6 +738,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             }
         });
 
+
+        //drop pins on all nearby malls
         mall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -730,6 +762,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             }
         });
 
+        //drop pins on all nearby parks
         park.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -756,6 +789,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     }
 
+
+    //get location permission and current location
 
     @Override
     public void onMyLocationClick(@NonNull Location location) {

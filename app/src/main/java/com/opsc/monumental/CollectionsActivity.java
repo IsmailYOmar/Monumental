@@ -66,16 +66,18 @@ public class CollectionsActivity extends AppCompatActivity {
 
         ref = FirebaseDatabase.getInstance().getReference("Favourites");
 
+        //get user id
         String userID = mAuth.getCurrentUser().getUid();
 
+        //Place.Field List to store user data
         List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME,
                 Place.Field.ADDRESS,Place.Field.PHONE_NUMBER,Place.Field.WEBSITE_URI);
 
+        //set custom array Adapter to list
         arrAd = new FavouriteAdapter(CollectionsActivity.this, R.layout.list_item2, R.id.field_NAME , arrList);
         list.setAdapter(arrAd);
 
-
-
+        //get list items
         ref.orderByChild(userID).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -99,6 +101,7 @@ public class CollectionsActivity extends AppCompatActivity {
                             // TODO: Handle error with given status code.
                         }
                     });
+                    //update list
                     arrAd.notifyDataSetChanged();
                 }
             }
@@ -123,6 +126,8 @@ public class CollectionsActivity extends AppCompatActivity {
 
             }
         });
+
+        //list on long click to be added later
 
         /*list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override

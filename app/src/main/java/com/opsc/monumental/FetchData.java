@@ -1,34 +1,18 @@
 package com.opsc.monumental;
 
-import android.app.Dialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.media.CamcorderProfile;
 import android.os.AsyncTask;
-import android.view.Gravity;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
 
-import org.json.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.Optional;
 
 public class FetchData extends AsyncTask<Object,String,String> {
 
@@ -42,6 +26,9 @@ public class FetchData extends AsyncTask<Object,String,String> {
     GoogleMap googleMap;
     String url;
     Marker mMarker;
+
+    //fetch and send json data from googleNearbyPlaces api
+
 
     @Override
     protected void onPostExecute(String s)

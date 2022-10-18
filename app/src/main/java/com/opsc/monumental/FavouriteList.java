@@ -1,8 +1,7 @@
 package com.opsc.monumental;
 
-import android.net.Uri;
-
 public class FavouriteList {
+    //model to store and get location detail of favorite landmark
 
     String locationName;
     String locationAddress;
