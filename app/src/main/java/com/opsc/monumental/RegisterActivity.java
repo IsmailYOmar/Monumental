@@ -1,17 +1,15 @@
 package com.opsc.monumental;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -67,7 +65,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         String email = emailAddress.getText().toString();
         String pass = password.getText().toString();
 
-        String defaultSystem = "Metric";
+        String defaultSystem = "metric";
         String defaultPreference = "shopping_mall";
 
         if(TextUtils.isEmpty(fn)) {

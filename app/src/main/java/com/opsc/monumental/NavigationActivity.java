@@ -198,7 +198,7 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
                     "origin=" + lastKnownLocation.getLatitude() + "," + lastKnownLocation.getLongitude() +
                     "&destination=" + endLat + "," + endLng +
                     "&mode=" + mode +
-                    "&units="+ units +
+                    "&units="+ units.toLowerCase() +
                     "&key=AIzaSyDZ2EP0ZUjVnNSp846Vifwsm2qBwYUjvU8";
 
             retrofitAPI.getDirection(url).enqueue(new Callback<DirectionResponseModel>() {

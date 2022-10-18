@@ -118,10 +118,10 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(toggleMetric.isChecked()){
-                    newSystem = "metric";
+                    newSystem = "Metric";
                     toggleImperial.setChecked(false);
                 }else if (!toggleMetric.isChecked()) {
-                    newSystem = "imperial";
+                    newSystem = "Imperial";
                     toggleImperial.setChecked(true);
                 }
 
@@ -131,10 +131,10 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(toggleImperial.isChecked()){
-                    newSystem = "imperial";
+                    newSystem = "Imperial";
                     toggleMetric.setChecked(false);
                 }else if (!toggleImperial.isChecked()) {
-                    newSystem = "metric";
+                    newSystem = "Metric";
                     toggleMetric.setChecked(true);
                 }
 
@@ -152,11 +152,11 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                 if(set != null) {
                     String system = set.selectedSystem;
 
-                    if(system.equals("metric")) {
+                    if(system.equals("Metric")) {
                         toggleMetric.setChecked(true);
                         toggleImperial.setChecked(false);
                     }
-                    else if(system.equals("imperial")) {
+                    else if(system.equals("Imperial")) {
                         toggleMetric.setChecked(false);
                         toggleImperial.setChecked(true);
                     }
