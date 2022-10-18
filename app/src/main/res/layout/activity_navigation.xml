@@ -25,7 +25,8 @@
             android:layout_gravity="center_vertical|end"
             android:layout_marginEnd="15dp"
             app:backgroundTint="@color/white"
-            android:src="@drawable/ic_baseline_gps_fixed_24"
+            android:visibility="invisible"
+            android:background="@drawable/ic_baseline_gps_fixed_24"
             app:fabCustomSize="40dp"
              />
 
