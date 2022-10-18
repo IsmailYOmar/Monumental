@@ -75,7 +75,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private PlacesClient placesClient;
     // The entry point to the Fused Location Provider.
     private FusedLocationProviderClient fusedLocationProviderClient;
-    private String API = "&key=AIzaSyDZ2EP0ZUjVnNSp846Vifwsm2qBwYUjvU8";
 
     private ActivityMapsBinding binding;
     Button collections,settings1,settings2,directions,restaurant,bank,park,mall,gps,pins;
@@ -191,16 +190,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 StringBuilder stringBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
                 stringBuilder.append("location=" + lastKnownLocation.getLatitude() + "," + lastKnownLocation.getLongitude());
                 stringBuilder.append("&radius=1000");
-
-                //user settings
-
-                //
-                //
-                // "&type="+ user_pref
-
                 stringBuilder.append("&type="+ user_pref);
                 stringBuilder.append("&sensor=true");
-                stringBuilder.append(API);
+                stringBuilder.append("&key=" + BuildConfig.NEARBY_API_KEY);
 
                 String url = stringBuilder.toString();
                 Object dataFetch[]= new Object[2];
@@ -681,7 +673,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 stringBuilder.append("&radius=1000");
                 stringBuilder.append("&type=bank");
                 stringBuilder.append("&sensor=true");
-                stringBuilder.append(API);
+                stringBuilder.append("&key=" + BuildConfig.NEARBY_API_KEY);
 
                 String url = stringBuilder.toString();
                 Object dataFetch[]= new Object[2];
@@ -703,7 +695,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 stringBuilder.append("&radius=1000");
                 stringBuilder.append("&type=restaurant");
                 stringBuilder.append("&sensor=true");
-                stringBuilder.append(API);
+                stringBuilder.append("&key=" + BuildConfig.NEARBY_API_KEY);
 
                 String url = stringBuilder.toString();
                 Object dataFetch[]= new Object[2];
@@ -725,7 +717,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 stringBuilder.append("&radius=1000");
                 stringBuilder.append("&type=shopping_mall");
                 stringBuilder.append("&sensor=true");
-                stringBuilder.append(API);
+                stringBuilder.append("&key=" + BuildConfig.NEARBY_API_KEY);
 
                 String url = stringBuilder.toString();
                 Object dataFetch[]= new Object[2];
@@ -747,7 +739,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 stringBuilder.append("&radius=1000");
                 stringBuilder.append("&type=park");
                 stringBuilder.append("&sensor=true");
-                stringBuilder.append(API);
+                stringBuilder.append("&key=" + BuildConfig.NEARBY_API_KEY);
 
                 String url = stringBuilder.toString();
                 Object dataFetch[]= new Object[2];

@@ -5,12 +5,26 @@ import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.app.Dialog;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -20,6 +34,7 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,6 +49,8 @@ import java.util.List;
 public class CollectionsActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
+    FirebaseUser user;
+    String userId;
 
     // The entry point to the Places API.
     private PlacesClient placesClient;
@@ -41,6 +58,7 @@ public class CollectionsActivity extends AppCompatActivity {
     private FusedLocationProviderClient fusedLocationProviderClient;
 
     ListView list;
+    Dialog myDialog;
     ArrayList<FavouriteList> arrList = new ArrayList<>();
     FavouriteAdapter arrAd;
     DatabaseReference ref;
@@ -51,6 +69,7 @@ public class CollectionsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_collections);
 
         list = (ListView) findViewById(R.id.statisticsList);
+        myDialog = new Dialog(this);
 
         // Construct a PlacesClient
         Places.initialize(getApplicationContext(), BuildConfig.MAPS_API_KEY);
@@ -120,6 +139,78 @@ public class CollectionsActivity extends AppCompatActivity {
 
             }
         });
+
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                myDialog.setContentView(R.layout.update_delete_window);
+                myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                myDialog.show();
+
+                FavouriteList favourite = arrList.get(position);
+
+                Button btnUpdate, btnDelete;
+
+                btnDelete = (Button) myDialog.findViewById(R.id.deleteBtn);
+
+                //delete  items selected
+                btnDelete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ref = FirebaseDatabase.getInstance().getReference();
+                        user = mAuth.getCurrentUser();
+                        assert user != null;
+                        userId = user.getUid();
+                        //delete Wishlist in collection
+                        ref.child("Favourite").child(itemKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                snapshot.getRef().removeValue();
+
+                                list.remove(position);
+                                listOfKey.remove(position);
+                                arrAd.notifyDataSetChanged();
+                                // update list view with new values
+                                myDialog.dismiss();
+
+                                LayoutInflater inflater = getLayoutInflater();
+                                View customToastLayout = inflater.inflate(R.layout.list_item2, (ViewGroup) findViewById(R.id.root_layout));
+                                TextView textView6 = customToastLayout.findViewById(R.id.name);
+                                textView6.setText("Collection deleted.");
+
+                                Toast mToast = new Toast(CollectionsActivity.this);
+                                mToast.setDuration(Toast.LENGTH_SHORT);
+                                mToast.setView(customToastLayout);
+                                mToast.show();
+                                //Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
+                                myDialog.dismiss();
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                LayoutInflater inflater = getLayoutInflater();
+                                View customToastLayout = inflater.inflate(R.layout.list_item2, (ViewGroup) findViewById(R.id.root_layout));
+                                TextView textView6 = customToastLayout.findViewById(R.id.name);
+                                textView6.setText("Operation failed.");
+
+                                Toast mToast = new Toast(CollectionsActivity.this);
+                                mToast.setDuration(Toast.LENGTH_SHORT);
+                                mToast.setView(customToastLayout);
+                                mToast.show();
+                                //Toast.makeText(MyCollectionsActivity.this, "Operation failed.", Toast.LENGTH_LONG).show();
+                                myDialog.dismiss();
+                            }
+                        });
+
+                    }
+                });
+                return true;
+            }
+        });
+
 
     }
 }
