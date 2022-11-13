@@ -8,12 +8,15 @@ android {
     namespace 'com.opsc.monumental'
     compileSdk 32
 
+    dataBinding{
+        enabled=true
+    }
     defaultConfig {
         applicationId "com.opsc.monumental"
         minSdk 23
         targetSdk 32
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName '2.0'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -22,6 +25,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            versionNameSuffix '2.0'
         }
     }
     compileOptions {
@@ -44,7 +48,7 @@ dependencies {
     implementation 'com.google.maps.android:android-maps-utils:2.2.0'
     implementation 'com.google.maps:google-maps-services:0.2.9'
     implementation 'org.slf4j:slf4j-simple:1.7.25'
-
+    implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.google.android.gms:play-services-places:17.0.0'
     implementation 'com.google.android.libraries.places:places:2.5.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
@@ -56,7 +60,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
     implementation 'com.android.volley:volley:1.2.1'
-
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     // Retrofit Library
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.7.1'

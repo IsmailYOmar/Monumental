@@ -11,12 +11,14 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +32,12 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -57,10 +65,19 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.opsc.monumental.Model.WeatherRetrofit.IOpenWeather;
+import com.opsc.monumental.Model.WeatherRetrofit.RetrofitClient;
 import com.opsc.monumental.databinding.ActivityMapsBinding;
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.List;
+
+import io.reactivex.disposables.CompositeDisposable;
 
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener,
@@ -82,18 +99,19 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private PlacesClient placesClient;
     // The entry point to the Fused Location Provider.
     private FusedLocationProviderClient fusedLocationProviderClient;
-
+    private IOpenWeather retrofit;
     private ActivityMapsBinding binding;
     Button collections,settings1,settings2,directions,restaurant,bank,park,mall,gps,pins;
     LinearLayout list;
     androidx.appcompat.widget.SearchView searchView;
     BottomSheetBehavior bottomSheetBehavior;
     private static final String TAG = "MapsActivity";
-    private String user_pref ;
+    private String user_pref,units ;
     private LocationManager locationManager;
     private Location userCurrentLocation;
     private LocationListener locationListener;
-
+    ImageView weatherIcon;
+    TextView weather;
     private final LatLng defaultLocation = new LatLng(-33.8523341, 151.2106085);
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private boolean locationPermissionGranted;
@@ -103,7 +121,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     // The geographical location where the device is currently located. That is, the last-known
     // location retrieved by the Fused Location Provider.
     private Location lastKnownLocation;
-
+    IOpenWeather service;
+    CompositeDisposable compositeDisposable;
+    public static final String APP_ID="298604f23af307000d66a147aa6f7071";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,31 +131,12 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
 
         mAuth = FirebaseAuth.getInstance();
-
+        getUserSettings();
         //remove status bar
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window w = getWindow();
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
-
-        //get user landmark preference
-        String userID = mAuth.getCurrentUser().getUid();
-        ref = FirebaseDatabase.getInstance().getReference("Settings");
-        ref.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Setting set = snapshot.getValue(Setting.class);
-
-                if(set != null) {
-                    user_pref= set.selectedPreference;
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
 
         binding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -218,6 +219,13 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 fetchData.execute(dataFetch);
             }
         });
+
+
+
+        retrofit = RetrofitClient.getRetrofit().create(IOpenWeather.class);
+        weather = findViewById(R.id.weather);
+        weatherIcon= (ImageView) findViewById(R.id.weatherIcon);
+
 
         list= findViewById(R.id.list);
 
@@ -417,27 +425,13 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         directions = findViewById(R.id.directions);
 
         directions.setOnClickListener(v -> {
-            myDialog.setContentView(R.layout.activity_directions);
-            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-            lp.copyFrom(myDialog.getWindow().getAttributes());
-            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-            lp.gravity = Gravity.BOTTOM;
-            myDialog.getWindow().setAttributes(lp);
-            myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            myDialog.show();
+            if(mMap.getMapType() == GoogleMap.MAP_TYPE_HYBRID){
+                mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            }
+            else{
+                mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+            }
 
-            Button btnClose;
-            btnClose = (Button) myDialog.findViewById(R.id.btnClose);
-
-            btnClose.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View view) {
-                    myDialog.dismiss();
-                    mMap.clear();
-                }
-            });
         });
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -445,6 +439,30 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
+
+    private void getUserSettings() {
+        //get user landmark preference
+        String userID = mAuth.getCurrentUser().getUid();
+        ref = FirebaseDatabase.getInstance().getReference("Settings");
+        ref.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Setting set = snapshot.getValue(Setting.class);
+
+                if(set != null) {
+                    user_pref= set.selectedPreference;
+                    units= set.selectedSystem;
+                    units = units.toLowerCase();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
 
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -861,7 +879,14 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(lastKnownLocation.getLatitude(),
                                                 lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        getCurrentWeather();
+                                    }
+                                },1000);
                             }
+
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
                             Log.e(TAG, "Exception: %s", task.getException());
@@ -897,6 +922,55 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             }
         } catch (SecurityException e)  {
             Log.e("Exception: %s", e.getMessage());
+        }
+    }
+    private void getCurrentWeather() {
+        try {
+            if (locationPermissionGranted) {
+                String url = "https://api.openweathermap.org/data/2.5/weather?" +
+                        "lat=" + lastKnownLocation.getLatitude() +
+                        "&lon=" + lastKnownLocation.getLongitude() +
+                        "&units=" + "metric" +
+                        "&appid=" + APP_ID;
+
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            JSONArray jsonArray = jsonResponse.getJSONArray("weather");
+                            JSONObject jsonObjectWeather = jsonArray.getJSONObject(0);
+                            JSONObject jsonObjectMain = jsonResponse.getJSONObject("main");
+                            double temp = jsonObjectMain.getDouble("temp");
+                            String img = jsonObjectWeather.getString("icon");
+
+                            if (units.equals("Metric") || units.equals("metric")) {
+                                weather.setText(String.valueOf(temp) + "°C");
+                            } else if (units.equals("Imperial")) {
+                                weather.setText(String.valueOf(temp) + "°F");
+                            }
+
+                            String imgUrl = new StringBuilder("https://openweathermap.org/img/w/").append(img).append(".png").toString();
+                            Picasso
+                                    .get()
+                                    .load(imgUrl)
+                                    .into(weatherIcon);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(), error.toString().trim(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                requestQueue.add(stringRequest);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
