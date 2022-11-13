@@ -123,7 +123,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private Location lastKnownLocation;
     IOpenWeather service;
     CompositeDisposable compositeDisposable;
-    public static final String APP_ID="298604f23af307000d66a147aa6f7071";
+    public static final String APP_ID="921ac25a2c9647fc80fe0f78c0e701e5";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
