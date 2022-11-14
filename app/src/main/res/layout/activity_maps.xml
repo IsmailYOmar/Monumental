@@ -85,7 +85,7 @@
             android:layout_height="35dp"
             android:layout_marginStart="8dp"
             android:layout_gravity="center"
-            android:background="@drawable/navigation" />
+            android:background="@drawable/ic__layer_group_" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="50dp"

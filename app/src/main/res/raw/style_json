@@ -120,6 +120,15 @@
     ]
   },
   {
+    "featureType": "poi",
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "color": "#E37D9E"
+      }
+    ]
+  },
+  {
     "featureType": "poi.attraction",
     "elementType": "geometry",
     "stylers": [
