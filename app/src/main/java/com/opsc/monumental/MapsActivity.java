@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
@@ -48,6 +49,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -437,6 +439,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
     }
 
     private void getUserSettings() {
@@ -474,6 +477,20 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     public void onMapReady(GoogleMap map) {
         // Prompt the user for permission.
         mMap = map;
+
+        try {
+            // Customise the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            boolean success = mMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this, R.raw.style_json));
+
+            if (!success) {
+                Log.e(TAG, "Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e(TAG, "Can't find style. Error: ", e);
+        }
         // and move map camera to current location
         updateLocationUI();
         getDeviceLocation();
@@ -929,7 +946,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 String url = "https://api.openweathermap.org/data/2.5/weather?" +
                         "lat=" + lastKnownLocation.getLatitude() +
                         "&lon=" + lastKnownLocation.getLongitude() +
-                        "&units=" + "metric" +
+                        "&units=" + units +
                         "&appid=" + BuildConfig.APP_ID;
 
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -944,12 +961,12 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             String img = jsonObjectWeather.getString("icon");
 
                             if (units.equals("Metric") || units.equals("metric")) {
-                                weather.setText(String.valueOf(temp) + "°C");
-                            } else if (units.equals("Imperial")) {
-                                weather.setText(String.valueOf(temp) + "°F");
+                                weather.setText(String.format("%.1f", temp) + "°C");
+                            } else if (units.equals("imperial")) {
+                                weather.setText(String.format("%.1f", temp) + "°F");
                             }
 
-                            String imgUrl = new StringBuilder("https://openweathermap.org/img/w/").append(img).append(".png").toString();
+                            String imgUrl = new StringBuilder("https://openweathermap.org/img/wn/").append(img).append("@2x.png").toString();
                             Picasso
                                     .get()
                                     .load(imgUrl)

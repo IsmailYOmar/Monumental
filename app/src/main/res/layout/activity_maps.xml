@@ -25,11 +25,12 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MapsActivity" />
+        tools:context=".MapsActivity"
+    />
 
     <LinearLayout
         android:layout_width="90dp"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:background="@drawable/weather_rectangle"
         android:layout_gravity="top|right"
         android:layout_marginTop="45dp"
@@ -45,8 +46,8 @@
             android:id="@+id/weather"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="11dp"
-            android:layout_marginStart="-2dp"
+            android:paddingTop="9dp"
+            android:layout_marginStart="-5dp"
             android:textSize="16dp"
             android:textColor="@color/color_2"
             android:textAlignment="center"
